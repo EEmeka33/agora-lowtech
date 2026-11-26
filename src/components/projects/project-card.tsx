@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { CalendarDays, CheckSquare } from "lucide-react";
 import { AvatarStack } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";

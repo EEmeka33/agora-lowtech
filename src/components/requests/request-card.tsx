@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CalendarClock, Hand, Loader2, Undo2, UserPlus, XCircle } from "lucide-react";
 import { toast } from "sonner";

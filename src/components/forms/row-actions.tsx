@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { toast } from "sonner";
 import { MoreHorizontal } from "lucide-react";
 import { Menu, MenuItem, MenuSeparator } from "@/components/ui/menu";

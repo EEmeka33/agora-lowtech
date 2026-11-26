@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { Download, KeyRound, Link2, Pencil, Power, Trash2, User, Users } from "lucide-react";
 import type { Prisma } from "@/generated/prisma/client";
 import { requireContext } from "@/lib/context";

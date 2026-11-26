@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { colorFor, colorOf } from "@/lib/colors";
 import { cn, formatDate, formatTime, nowWall } from "@/lib/utils";

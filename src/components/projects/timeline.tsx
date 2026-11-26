@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useLocale, useT } from "@/lib/i18n/client";
 import { colorOf } from "@/lib/colors";
 import { cn, formatDate } from "@/lib/utils";

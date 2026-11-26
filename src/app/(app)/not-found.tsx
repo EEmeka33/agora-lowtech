@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { SearchX } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { useT } from "@/lib/i18n/client";

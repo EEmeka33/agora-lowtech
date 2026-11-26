@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { notFound } from "next/navigation";
 import { CalendarDays, ChevronLeft, Crown, KeyRound, Link2, Mail, Pencil, Phone, Power, Rocket } from "lucide-react";
 import { requireContext } from "@/lib/context";

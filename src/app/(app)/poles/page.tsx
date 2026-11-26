@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { CheckSquare, FolderKanban, Layers, Plus, Users } from "lucide-react";
 import { requireContext } from "@/lib/context";
 import { getI18n } from "@/lib/i18n/server";

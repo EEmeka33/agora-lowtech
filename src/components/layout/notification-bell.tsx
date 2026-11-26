@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { Bell, CheckCheck, Loader2 } from "lucide-react";
 import { Menu, MenuSeparator } from "@/components/ui/menu";
 import { Avatar } from "@/components/ui/avatar";

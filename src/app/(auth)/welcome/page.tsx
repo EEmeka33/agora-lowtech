@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import type { Metadata } from "next";
 import { ArrowRight, Building2, KeyRound, LogOut, Plus } from "lucide-react";
 import { db } from "@/lib/db";

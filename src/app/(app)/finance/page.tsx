@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { ArrowDownRight, ArrowUpRight, Download, Landmark, Pencil, Plus, Scale, Trash2, Wallet } from "lucide-react";
 import type { Prisma } from "@/generated/prisma/client";
 import { requireContext } from "@/lib/context";

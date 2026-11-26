@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { Avatar } from "@/components/ui/avatar";
 import { formatRelative } from "@/lib/utils";
 import type { Dictionary } from "@/lib/i18n/dictionaries";

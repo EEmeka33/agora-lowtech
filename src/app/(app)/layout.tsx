@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { db } from "@/lib/db";
 import { requireContext } from "@/lib/context";
 import { getI18n } from "@/lib/i18n/server";

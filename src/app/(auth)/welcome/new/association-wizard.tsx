@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { ActionForm, SubmitButton, useFormCtx } from "@/components/forms/action-form";
 import { CheckboxField, SelectField, TextAreaField, TextField } from "@/components/forms/fields";
