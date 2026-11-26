@@ -8,8 +8,9 @@
  *   the 1.1 GB of node_modules used to build it. That folder (with `.next/static`
  *   and `public` copied in, done here) is what you copy to a small machine.
  * - The JavaScript heap is capped (AGORA_MAX_MEMORY_MB, 192 by default): under load,
- *   the server stays around 325 MB of memory instead of growing to ~780 MB, for about
- *   5 % more processor time.
+ *   the server stays around 325 MB of memory instead of growing past 900 MB. The garbage
+ *   collector works more often: each page costs 20 to 50 % more processor time
+ *   (about 25 ms instead of 18 ms on our test machine). Raise it on a big server.
  */
 import { spawn } from "node:child_process";
 import { cpSync, existsSync } from "node:fs";
@@ -36,12 +37,11 @@ process.env.HOSTNAME = process.env.LISTEN_HOST ?? "0.0.0.0";
 cpSync(path.join(root, ".next", "static"), path.join(standalone, ".next", "static"), { recursive: true });
 if (existsSync("public")) cpSync("public", path.join(standalone, "public"), { recursive: true });
 
-const memory = process.env.AGORA_MAX_MEMORY_MB ?? "192";
-const capped = (process.env.NODE_OPTIONS ?? "").includes("max-old-space-size");
-const server = spawn(
-  process.execPath,
-  [...(capped ? [] : [`--max-old-space-size=${memory}`]), path.join(standalone, "server.js")],
-  { stdio: "inherit", env: process.env },
-);
+// On the command line, this cap wins over one in NODE_OPTIONS (some hosts set a large one for every process).
+const memory = Number(process.env.AGORA_MAX_MEMORY_MB) || 192;
+const server = spawn(process.execPath, [`--max-old-space-size=${memory}`, path.join(standalone, "server.js")], {
+  stdio: "inherit",
+  env: process.env,
+});
 for (const signal of ["SIGINT", "SIGTERM"]) process.on(signal, () => server.kill(signal));
 server.on("exit", (code) => process.exit(code ?? 0));
