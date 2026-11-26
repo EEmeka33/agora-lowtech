@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "@/components/ui/link";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { MoreHorizontal } from "lucide-react";
 import { Menu, MenuItem, MenuSeparator } from "@/components/ui/menu";
 import { Button } from "@/components/ui/button";

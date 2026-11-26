@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Check, Flag, Plus, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { addMilestone, deleteMilestone, toggleMilestone } from "@/actions/projects";
 import { ActionForm, SubmitButton } from "@/components/forms/action-form";
 import { Input } from "@/components/ui/input";

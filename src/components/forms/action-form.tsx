@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Loader2 } from "lucide-react";
 import type { ActionState } from "@/lib/action-utils";
 import { Button, type ButtonProps } from "@/components/ui/button";

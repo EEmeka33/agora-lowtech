@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Plus } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { FormDialog } from "@/components/forms/form-dialog";
 import { LinkResultDialog } from "@/components/forms/link-result";
 import { Button } from "@/components/ui/button";

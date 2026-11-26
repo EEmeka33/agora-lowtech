@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "@/components/ui/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CalendarClock, Hand, Loader2, Undo2, UserPlus, XCircle } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { assignRequest, cancelRequest, releaseRequest, takeRequest } from "@/actions/requests";
 import { RowActions, type RowAction } from "@/components/forms/row-actions";
 import { SelectField } from "@/components/forms/fields";

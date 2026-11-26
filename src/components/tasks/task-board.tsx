@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { setTaskStatus } from "@/actions/tasks";
 import { useT } from "@/lib/i18n/client";
 import { TASK_STATUSES } from "@/lib/constants";

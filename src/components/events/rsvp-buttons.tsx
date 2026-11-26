@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Check, HelpCircle, X } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { rsvp } from "@/actions/events";
 import { useT } from "@/lib/i18n/client";
 import { cn } from "@/lib/utils";

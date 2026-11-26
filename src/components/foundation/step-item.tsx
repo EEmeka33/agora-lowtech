@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Check, ChevronDown, CircleDashed, ExternalLink, Pencil, SkipForward, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { setStepStatus, deleteStep, updateStep } from "@/actions/foundation";
 import { RowActions, type RowAction } from "@/components/forms/row-actions";
 import { Avatar } from "@/components/ui/avatar";

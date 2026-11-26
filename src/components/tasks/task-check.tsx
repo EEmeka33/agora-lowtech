@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Check } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { setTaskStatus } from "@/actions/tasks";
 import { useT } from "@/lib/i18n/client";
 import { cn } from "@/lib/utils";

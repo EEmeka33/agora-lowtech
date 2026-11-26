@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Ban, Copy, KeyRound, Plus } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { createJoinCode, revokeJoinCode } from "@/actions/associations";
 import { FormDialog } from "@/components/forms/form-dialog";
 import { FormGrid, SelectField, TextField } from "@/components/forms/fields";

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { CalendarPlus, Copy, LogOut, Monitor, Smartphone } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { ActionForm, SubmitButton } from "@/components/forms/action-form";
 import { CheckboxField, TextField } from "@/components/forms/fields";
 import { ConfirmButton } from "@/components/forms/confirm-dialog";
