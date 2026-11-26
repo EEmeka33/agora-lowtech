@@ -5,7 +5,7 @@
 <div class="cols">
 <div>
   <?php if ($task['description']): ?><div class="text"><?= text_html($task['description']) ?></div><?php endif ?>
-  <?php if ($request): ?><p><?= h(t('tasks.fromRequest')) ?> : <a href="<?= h(url('/requests/' . $request['id'])) ?>"><?= h($request['title']) ?></a></p><?php endif ?>
+  <?php if ($request): ?><p><?= h(t('tasks.fromRequest')) ?><?= colon() ?><a href="<?= h(url('/requests/' . $request['id'])) ?>"><?= h($request['title']) ?></a></p><?php endif ?>
 
   <?php if ($canEdit): ?>
   <p class="actions no-print">

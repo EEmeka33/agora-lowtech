@@ -18,10 +18,10 @@ $maxPole = $byPole ? max(array_column($byPole, 'minutes')) : 0;
     <?= select_field('pole_id', t('common.pole'), pole_options(), old('pole_id'), ['empty' => t('common.none')]) ?>
     <?= select_field('project_id', t('common.project'), project_options(true), old('project_id', get_str('project')), ['empty' => t('common.none')]) ?>
     <?php if (get_str('task') && ($task = find('tasks', get_str('task')))): ?>
-      <input type="hidden" name="task_id" value="<?= (int) $task['id'] ?>"><p class="wide meta"><?= h(t('common.tasks')) ?> : <?= h($task['title']) ?></p>
+      <input type="hidden" name="task_id" value="<?= (int) $task['id'] ?>"><p class="wide meta"><?= h(t('common.tasks')) ?><?= colon() ?><?= h($task['title']) ?></p>
     <?php endif ?>
     <?php if (get_str('event') && ($event = find('events', get_str('event')))): ?>
-      <input type="hidden" name="event_id" value="<?= (int) $event['id'] ?>"><p class="wide meta"><?= h(t('nav.events')) ?> : <?= h($event['title']) ?></p>
+      <input type="hidden" name="event_id" value="<?= (int) $event['id'] ?>"><p class="wide meta"><?= h(t('nav.events')) ?><?= colon() ?><?= h($event['title']) ?></p>
     <?php endif ?>
     <p class="row"><button class="primary"><?= h(t('common.save')) ?></button></p>
   </form>

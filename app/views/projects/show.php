@@ -1,6 +1,6 @@
 <?php $p = $project; $done = in_array($p['status'], ['COMPLETED', 'CANCELLED'], true); ?>
 <p class="meta"><a href="<?= h(url('/projects')) ?>">← <?= h(t('projects.title')) ?></a></p>
-<?= page_head($p['title'], $p['pole_name'] ? t('common.pole') . ' : ' . $p['pole_name'] : '', status_badge('projectStatus', $p['status']) . ' ' . status_badge('health', $p['health'])) ?>
+<?= page_head($p['title'], $p['pole_name'] ? t('common.pole') . colon() . $p['pole_name'] : '', status_badge('projectStatus', $p['status']) . ' ' . status_badge('health', $p['health'])) ?>
 
 <?= tabs_html([
     'overview' => [t('projects.tabs.overview'), url("/projects/{$p['id']}")],
@@ -121,7 +121,7 @@
 
 <?php else: ?>
   <?php if ($p['budget_cents'] !== null): ?>
-  <p><?= h(t('projects.budgetUsed')) ?> : <?= h(fmt_money($spent)) ?> / <?= h(fmt_money((int) $p['budget_cents'])) ?>
+  <p><?= h(t('projects.budgetUsed')) ?><?= colon() ?><?= h(fmt_money($spent)) ?> / <?= h(fmt_money((int) $p['budget_cents'])) ?>
     <meter min="0" max="<?= max(1, (int) $p['budget_cents']) ?>" high="<?= (int) ($p['budget_cents'] * 0.9) ?>" value="<?= (int) $spent ?>"></meter> <?= pct($spent, (int) $p['budget_cents']) ?>&nbsp;%</p>
   <?php else: ?><?= empty_html(t('projects.noBudget')) ?><?php endif ?>
   <h2><?= h(t('projects.linkedTransactions')) ?></h2>

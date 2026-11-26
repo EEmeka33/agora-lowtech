@@ -15,7 +15,7 @@ $canEdit = can('manageStructure', $user);
       <li><?= h(t('structure.boardTitle')) ?> <small>— <?= h(t('structure.boardHint')) ?></small>
         <ul>
           <?php foreach (BOARD_POSITIONS as $pos): if ($pos === 'BOARD_MEMBER' && empty($byPosition[$pos])) continue; ?>
-          <li><?= h(enum_label('boardPosition', $pos)) ?> :
+          <li><?= h(enum_label('boardPosition', $pos)) ?><?= colon() ?>
             <?php if (empty($byPosition[$pos])): ?><span class="muted"><?= h(t('common.vacant')) ?></span><?php endif ?>
             <?= implode(', ', array_map(fn ($b) => person((int) $b['id'], $b['name']), $byPosition[$pos] ?? [])) ?></li>
           <?php endforeach ?>

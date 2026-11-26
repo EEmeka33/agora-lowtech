@@ -8,7 +8,7 @@ $isMeeting = in_array($e['type'], ['GENERAL_ASSEMBLY', 'BOARD_MEETING', 'POLE_ME
 
 <div class="cols">
 <div>
-  <?php if ($e['location']): ?><p><strong><?= h(t('common.location')) ?> :</strong> <?= h($e['location']) ?></p><?php endif ?>
+  <?php if ($e['location']): ?><p><strong><?= h(t('common.location')) ?><?= colon() ?></strong> <?= h($e['location']) ?></p><?php endif ?>
   <?php if ($e['description']): ?><div class="text"><?= text_html($e['description']) ?></div><?php endif ?>
 
   <div class="banner no-print">
@@ -36,7 +36,7 @@ $isMeeting = in_array($e['type'], ['GENERAL_ASSEMBLY', 'BOARD_MEETING', 'POLE_ME
 </div>
 <aside>
   <h2><?= h(t('events.attendees')) ?></h2>
-  <p class="meta"><?php foreach (RSVP as $s): ?><?= h(enum_label('rsvp', $s)) ?> : <?= (int) ($counts[$s] ?? 0) ?> · <?php endforeach ?></p>
+  <p class="meta"><?php foreach (RSVP as $s): ?><?= h(enum_label('rsvp', $s)) ?><?= colon() ?><?= (int) ($counts[$s] ?? 0) ?> · <?php endforeach ?></p>
   <ul class="plain">
     <?php foreach ($attendees as $a): ?><li><?= person((int) $a['id'], $a['name']) ?> <?= status_badge('rsvp', $a['status']) ?></li><?php endforeach ?>
   </ul>

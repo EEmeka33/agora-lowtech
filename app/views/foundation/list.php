@@ -28,7 +28,7 @@ foreach ($steps as $s) {
       <?= $s['completed_at'] ? ' · ' . h(t('foundation.completedOn', ['d' => fmt_date(utc_to_local($s['completed_at']))])) : '' ?></div>
     <details class="panel"><summary><?= h(t('common.details')) ?></summary>
       <?php if ($s['description']): ?><div class="text"><?= text_html($s['description']) ?></div><?php endif ?>
-      <?php if ($s['resource_url']): ?><p><?= h(t('foundation.resource')) ?> : <a href="<?= h($s['resource_url']) ?>" rel="noopener"><?= h($s['resource_url']) ?></a></p><?php endif ?>
+      <?php if ($s['resource_url']): ?><p><?= h(t('foundation.resource')) ?><?= colon() ?><a href="<?= h($s['resource_url']) ?>" rel="noopener"><?= h($s['resource_url']) ?></a></p><?php endif ?>
       <?php if ($s['notes']): ?><p><strong><?= h(t('common.notes')) ?></strong></p><div class="text"><?= text_html($s['notes']) ?></div><?php endif ?>
       <?php if ($canEdit): ?>
       <p class="actions no-print">

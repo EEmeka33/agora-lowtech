@@ -181,6 +181,12 @@ function confirm_form(string $action, string $label, string $warning = '', array
 
 // ─── Small pieces ──────────────────────────────────────────────────────────
 
+/** ": " in English, " : " in French (with a non-breaking space). */
+function colon(): string
+{
+    return locale() === 'fr' ? "\u{00A0}: " : ': ';
+}
+
 /** A small label. Tones: ok, warn, bad, info, muted. */
 function badge(string $text, string $tone = ''): string
 {

@@ -20,7 +20,7 @@
   <section class="box">
     <h2><a href="<?= h(url('/poles/' . $p['id'])) ?>"><?= h($p['name']) ?></a></h2>
     <?php if ($p['mission']): ?><p><?= h(str_cut($p['mission'], 160)) ?></p><?php endif ?>
-    <p class="meta"><?= h(t('common.leads')) ?> : <?= h($p['leads'] ?: t('poles.noLead')) ?><br>
+    <p class="meta"><?= h(t('common.leads')) ?><?= colon() ?><?= h($p['leads'] ?: t('poles.noLead')) ?><br>
       <?= h(tn('common.countMembers', (int) $p['member_count'])) ?> · <?= h(tn('common.countProjects', (int) $p['project_count'])) ?> · <?= h(tn('common.countTasks', (int) $p['task_count'])) ?>
       <?= $p['request_count'] ? '<br>' . h(tn('requests.openCount', (int) $p['request_count'])) : '' ?></p>
     <p><a href="<?= h(url('/requests', ['pole' => $p['id']])) ?>#new"><?= h(t('requests.askTitle', ['pole' => $p['name']])) ?></a></p>

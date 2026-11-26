@@ -11,7 +11,7 @@ $canAnnounce = can('manageAnnouncements', $user);
 <p class="banner">
   <strong><?= h(t('dashboard.foundingTitle')) ?></strong> · <?= progress_html($founding['percent']) ?>
   · <?= h(tn('dashboard.foundingText', $founding['done'], ['done' => $founding['done'], 'total' => $founding['total']])) ?>
-  <?php if ($nextStep): ?><br><?= h(t('dashboard.foundingNext')) ?> : <?= h($nextStep['title']) ?><?php endif ?>
+  <?php if ($nextStep): ?><br><?= h(t('dashboard.foundingNext')) ?><?= colon() ?><?= h($nextStep['title']) ?><?php endif ?>
   <br><a href="<?= h(url('/foundation')) ?>"><?= h(t('dashboard.foundingContinue')) ?> →</a>
 </p>
 <?php endif ?>

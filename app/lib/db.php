@@ -19,6 +19,7 @@ function db(): PDO
     if (!is_dir($dir)) {
         mkdir($dir, 0700, true);
     }
+    $isNew = !is_file($file);
     $pdo = new PDO('sqlite:' . $file, null, null, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -27,6 +28,9 @@ function db(): PDO
     $pdo->exec('PRAGMA busy_timeout = 5000');
     $pdo->exec('PRAGMA journal_mode = WAL');   // readers don't wait for writers
     $pdo->exec('PRAGMA synchronous = NORMAL');
+    if ($isNew) {
+        @chmod($file, 0600); // personal data: readable by the web server's user only
+    }
     migrate($pdo);
     return $pdo;
 }

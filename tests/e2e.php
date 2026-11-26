@@ -259,6 +259,36 @@ test('backup and exports', function () use ($camille) {
     check(str_contains($camille->get('/members.csv')->body, 'Yanis Benali'));
 });
 
+test('every page answers, in both languages', function () use ($camille, $base) {
+    $camille->get('/finance');
+    $tx = (int) $camille->find('#href="/finance/(\d+)\?#');
+    $camille->get('/documents');
+    $doc = (int) $camille->find('#href="/documents/(\d+)"#');
+    $camille->get('/foundation');
+    $step = (int) $camille->find('#href="/foundation/(\d+)"#');
+    $camille->post('/responsibilities', ['title' => 'Keep the accounts', 'frequency' => 'MONTHLY']);
+    $duty = (int) $camille->find('#href="/responsibilities/(\d+)"#');
+    $pages = ['/', '/foundation', '/structure', '/poles', '/requests', '/requests?tab=all&status=any', '/projects', '/projects?view=timeline',
+        '/tasks', '/tasks?view=list&scope=mine', '/events', '/events?view=calendar', '/events?view=past', '/polls', '/volunteering',
+        '/finance', '/documents', '/documents?q=statutes', '/members', '/members?status=all', '/members/codes', '/notifications', '/activity',
+        '/search?q=a', '/settings', '/settings/account', '/settings/notifications', '/settings/association', '/settings/backup',
+        '/about', '/welcome', "/finance/$tx", "/documents/$doc", "/foundation/$step", "/responsibilities/$duty"];
+    foreach (['en', 'fr'] as $locale) {
+        $camille->post('/locale', ['locale' => $locale, '_back' => '/']);
+        foreach ($pages as $path) {
+            check_same(200, $camille->get($path)->status, "$locale $path");
+        }
+    }
+    $camille->post('/locale', ['locale' => 'en', '_back' => '/']);
+    $visitor = new Browser($base);
+    foreach (['/login', '/signup', '/forgot', '/about', '/join?code=AAAAA-BBBBB', '/invite/' . str_repeat('x', 43)] as $path) {
+        check_same(200, $visitor->get($path)->status, "visitor $path");
+    }
+    check_same(404, $visitor->get('/nothing-here')->status);
+    check_same(405, $visitor->get('/logout')->status);
+    check_same("ok\n", $visitor->get('/health')->body);
+});
+
 test('low-tech budget: no JavaScript, light pages', function () use ($base) {
     $pages = Browser::$pages;
     check(count($pages) > 25, count($pages) . ' pages visited');
