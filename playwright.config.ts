@@ -18,6 +18,11 @@ export default defineConfig({
     trace: "off",
     ...devices["Desktop Chrome"],
   },
+  projects: [
+    { name: "story", testMatch: "smoke.spec.ts" },
+    // Measured on the association created by the story.
+    { name: "budget", testMatch: "budget.spec.ts", dependencies: ["story"] },
+  ],
   webServer: {
     command: `node scripts/e2e-server.mjs ${PORT}`,
     url: `http://localhost:${PORT}/api/health`,
