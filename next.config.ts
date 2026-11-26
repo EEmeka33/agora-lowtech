@@ -22,8 +22,11 @@ const nextConfig: NextConfig = {
   // boundary (see src/app/(app)/layout.tsx and loading.tsx).
   cacheComponents: true,
   partialPrefetching: true,
+  // A self-contained server in .next/standalone, with only the files it needs:
+  // what to copy to a small machine (see docs/self-hosting.md).
+  output: "standalone",
   // Native modules must stay Node.js dependencies.
-  serverExternalPackages: ["better-sqlite3", "@node-rs/argon2"],
+  serverExternalPackages: ["better-sqlite3", "@node-rs/argon2", "sharp"],
   // Allow opening the dev server from other devices on your network (phone, laptop…).
   // Add your machine's LAN IP or hostname here if needed, e.g. "192.168.1.20".
   allowedDevOrigins: ["127.0.0.1", "localhost"],

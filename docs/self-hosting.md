@@ -40,7 +40,13 @@ npm run setup
 - **Development** (hot reload): `npm run dev`
 - **Production** (faster): `npm run build`, then `npm start`
 
-Agora listens on port 3000. Use `npm start -- -p 8080` to choose another port.
+Agora listens on port 3000. Use `PORT=8080 npm start` to choose another port.
+
+`npm start` runs the small production server: `.next/standalone` contains only what the server needs (about
+85 MB, instead of the 1.1 GB of `node_modules` used to build it), and its memory is capped at 192 MB of
+JavaScript heap (`AGORA_MAX_MEMORY_MB`): about 325 MB in total under load instead of ~780 MB. On a machine
+with little memory (a Raspberry Pi), you can build on a bigger computer and copy the project folder with
+`.next/` and `data/`; `node_modules` is then only needed for `npx prisma migrate deploy`.
 
 To keep it running after you close the terminal, use a process manager such as
 [pm2](https://pm2.keymetrics.io/) (`pm2 start npm --name agora -- start`) or a systemd service:
