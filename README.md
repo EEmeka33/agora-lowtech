@@ -1,8 +1,8 @@
 <div align="center">
 
-# Agora
+# Agora, low-tech edition
 
-**The self-hosted workspace to found and run an association.**
+**The self-hosted workspace to found and run an association, made light.**
 
 Set up the organization, see who does what, ask other poles for help, follow projects and their progress,
 decide together, and keep members, events, money and documents in one place. In English and French.
@@ -10,6 +10,39 @@ decide together, and keep members, events, money and documents in one place. In 
 ![Dashboard](docs/screenshots/dashboard.webp)
 
 </div>
+
+> This is the **low-tech edition** of [Agora](https://github.com/EEmeka33/agora): the same features and the same
+> design, with pages 2.7 times lighter, no background traffic, less data kept and a server that fits on a small
+> machine. Every change was measured before and after: the process, the numbers and course material are in
+> **[docs/low-tech.md](docs/low-tech.md)**.
+
+## Low-tech edition
+
+|                                        | Original             | Low-tech edition                  |
+| -------------------------------------- | -------------------- | --------------------------------- |
+| Dashboard, empty cache                 | 614 KB, 76 requests  | **230 KB, 15 requests**           |
+| A page with the cache warm             | 76–99 KB             | **20–24 KB**                      |
+| Requests from a tab left open, per day | 1,440                | **0**                             |
+| Disk needed to run the server          | 1.2 GB               | **88 MB**                         |
+| Server memory after 600 requests       | 790 MB               | **~325 MB** (for +20–50 % of CPU) |
+| A 12-megapixel photo, stored           | 5.3 MB               | **0.2 MB**                        |
+| Emails                                 | one per notification | **at most one summary a day**     |
+
+What changed, in ten measured steps (one commit each):
+
+1. Pages are prefetched when you point at a link, not as soon as it is visible.
+2. The system font of each device instead of a downloaded web font.
+3. Finance charts drawn on the server instead of with a chart library.
+4. No polling: the notification bell refreshes when you come back to the tab.
+5. Only the texts of your language are sent.
+6. A small toast component instead of a library.
+7. A small standalone server with a memory cap.
+8. Photos reduced on upload, old notifications and history cleaned up, one email summary a day.
+9. Pages that print cleanly (minutes, accounts, task lists), even from dark mode.
+10. A budget test that fails if a change makes pages heavier or brings background traffic back.
+
+A first attempt, a complete rewrite in plain PHP without JavaScript, was 20 times lighter but much less pleasant
+to use; it is kept on the `php-rewrite` branch for comparison (see section 2 of the course material).
 
 ---
 
@@ -43,7 +76,7 @@ one place, and runs on your own computer or server.
 | 💶 **Finance**              | Income and expenses, monthly chart, project budgets, **membership fees**, CSV export.                                                                                                                                                |
 | 📄 **Documents**            | Files and links (statutes, minutes, guides…), by category.                                                                                                                                                                           |
 | 👥 **Members & accounts**   | Anyone can create an account, create an association or **join one with a code**. Codes have a **limited number of uses** and an expiry date. Roles: administrator, manager, member.                                                  |
-| 🔔 **Notifications**        | In-app notification center, plus emails when SMTP is configured.                                                                                                                                                                     |
+| 🔔 **Notifications**        | In-app notification center, plus one email summary a day (or each notification) when SMTP is configured.                                                                                                                             |
 | 🏢 **Several associations** | One Agora can host several associations; each person switches between theirs, and data never leaks from one to another.                                                                                                              |
 | 🔐 **Security**             | Argon2id passwords, revocable sessions, account lockout, hashed tokens, security headers. See [SECURITY.md](SECURITY.md).                                                                                                            |
 
@@ -85,7 +118,7 @@ one place, and runs on your own computer or server.
 Requirements: [Node.js](https://nodejs.org) **20.19 or newer** (22 LTS recommended).
 
 ```bash
-git clone https://github.com/EEmeka33/agora.git && cd agora
+git clone https://github.com/EEmeka33/agora-lowtech.git && cd agora-lowtech
 ```
 
 ```bash
@@ -129,6 +162,7 @@ See the [self-hosting guide](docs/self-hosting.md) for HTTPS, email, backups and
 
 |                                                         |                                                                       |
 | ------------------------------------------------------- | --------------------------------------------------------------------- |
+| 🌱 [Low-tech](docs/low-tech.md)                         | The process, the measurements, the trade-offs, and course material    |
 | 📘 [User guide](docs/user-guide.md)                     | How each part of Agora works, for members and administrators          |
 | 🖥️ [Self-hosting](docs/self-hosting.md)                 | Install, configure (sign-up policy, email, HTTPS), back up and update |
 | 🧱 [Architecture](docs/architecture.md)                 | How the code is organized, multi-association isolation, sessions      |
@@ -151,6 +185,8 @@ Settings live in `.env` (created by `npm run setup` from [.env.example](.env.exa
 | `APP_URL`                | auto                   | Public address, used in emails and links            |
 | `SECURE_COOKIES`         | `false`                | `true` behind HTTPS                                 |
 | `MAX_UPLOAD_MB`          | `20`                   | Maximum upload size                                 |
+| `RETENTION_DAYS`         | `365`                  | How long the activity history is kept               |
+| `AGORA_MAX_MEMORY_MB`    | `192`                  | Memory cap of the server started by `npm start`     |
 
 ## Tech stack
 
@@ -162,13 +198,13 @@ Tailwind CSS 4 · Argon2id · Vitest · Playwright. Details in [docs/architectur
 | Command                                                 | What it does                                            |
 | ------------------------------------------------------- | ------------------------------------------------------- |
 | `npm run dev`                                           | Development server with hot reload                      |
-| `npm run build` then `npm start`                        | Optimized production server                             |
+| `npm run build` then `npm start`                        | Small production server (standalone, memory cap)        |
 | `npm run db:backup`                                     | Back up the database and uploads (safe while running)   |
 | `npm run db:studio`                                     | Browse the database in your browser                     |
 | `npm run db:migrate -- --name my_change`                | Create a migration after editing `prisma/schema.prisma` |
 | `npm run lint` · `npm run typecheck` · `npm run format` | Code quality                                            |
 | `npm test`                                              | Unit tests (including tenant isolation)                 |
-| `npm run build && npm run test:e2e`                     | End-to-end test of the whole journey                    |
+| `npm run build && npm run test:e2e`                     | End-to-end test of the whole journey, then the budget   |
 
 ## License
 

@@ -6,6 +6,31 @@ All notable changes to Agora are listed here. The format follows
 
 ## [Unreleased]
 
+### Low-tech edition
+
+The same features and design, made lighter in ten measured steps. Details and numbers in
+[docs/low-tech.md](docs/low-tech.md).
+
+- Links prefetch a page when they are pointed at, touched or focused, not as soon as they are visible: the
+  dashboard goes from 614 KB and 76 requests to 296 KB and 15 requests.
+- The system font replaces the Inter web font (−48 KB per page).
+- The finance charts are drawn on the server; Recharts is removed (finance page: 359 → 247 KB).
+- The notification bell no longer polls every minute: it refreshes when the tab comes back into view.
+- Only the dictionary of the page's language is sent (−10 KB per page).
+- A small toast component replaces sonner (−8 KB per page).
+- `npm start` runs the standalone server (88 MB instead of 1.2 GB of `node_modules`) with a memory cap
+  (`AGORA_MAX_MEMORY_MB`, 192 MB of heap): about 325 MB under load instead of 790 MB or more, for 20 to 50 % more
+  processor time per page.
+- Uploaded photos are reduced to 1600 pixels without their metadata (a 5.3 MB test photo is stored as 0.2 MB).
+- A daily cleanup removes read notifications after 90 days, the activity history after `RETENTION_DAYS` (365),
+  expired sessions, old one-time links and orphan files.
+- Emails: one summary a day by default, only with notifications not seen in Agora; members can choose each
+  notification right away, or no emails (Settings → Notifications).
+- Pages print cleanly: no navigation, buttons or background ink, light colours even from dark mode, meeting
+  minutes in full.
+- `tests/e2e/budget.spec.ts` fails if a page exceeds 260 KB, 210 KB of JavaScript or 20 requests, downloads a
+  font, prefetches before a click, or if an open tab makes requests.
+
 ### Security
 
 - Patched a high-severity ReDoS vulnerability in `effect`, a dependency of Prisma's configuration loader
@@ -82,5 +107,5 @@ First public release.
 > Builds shared before 1.0.0 used a different database schema. If you tried one, delete the `data/` folder and
 > run `npm run setup` again.
 
-[Unreleased]: https://github.com/EEmeka33/agora/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/EEmeka33/agora-lowtech
 [1.0.0]: https://github.com/EEmeka33/agora/releases/tag/v1.0.0

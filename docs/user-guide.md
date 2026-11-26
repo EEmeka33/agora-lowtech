@@ -112,6 +112,9 @@ _Going / Maybe / Not going_. Meetings have an **agenda** and **minutes**: keep t
 assemblies and board meetings, they are the official record of your decisions. Tick **Notify members**
 when creating an event to notify everyone (or the pole's members).
 
+To keep a paper copy (or a PDF), print the page of the meeting: only the agenda, the minutes and the
+attendance are printed, without the menu or buttons. The finance page and the task board print the same way.
+
 To see events in your own calendar, go to **Settings → Notifications → Calendar subscription** and add the
 private link to Google Calendar, Apple Calendar or Outlook ("subscribe from URL").
 
@@ -137,7 +140,8 @@ paid for the year; recording a payment also adds the matching income. Everything
 ## Documents
 
 Upload files (statutes, minutes, receipts, guides…) or save links, with a category, pole or project.
-Files are only accessible to members of the association.
+Files are only accessible to members of the association. Photos are reduced to 1600 pixels when they are
+uploaded (sharp on screen, light to store and download), and their location data is removed.
 
 ## Members and invitations
 
@@ -156,8 +160,10 @@ account status. Administrators can:
 The bell in the top bar shows what concerns you: requests to your poles, requests you made being taken or
 done, tasks assigned to you, comments on tasks you created, are assigned to or commented on, new events,
 votes and announcements, new members.
-Click a notification to open it. With email configured on the server, you also receive them by email
-(**Settings → Notifications** to turn emails off).
+Click a notification to open it. With email configured on the server, you receive **one summary a day at
+most**, listing only what you have not already seen in Agora; nothing is sent when you have seen everything.
+In **Settings → Notifications** you can choose each notification right away instead, or no emails.
+Read notifications are removed after 90 days.
 
 ## Your account
 
