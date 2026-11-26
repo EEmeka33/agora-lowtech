@@ -557,6 +557,7 @@ export const fr: Dictionary = {
     urlPlaceholder: "https://…",
     fileOrLinkRequired: "Ajoutez un fichier ou un lien.",
     tooLarge: (mb: number) => `Fichier trop volumineux (max ${mb} Mo).`,
+    photosReduced: "Les photos sont réduites à 1600 pixels : nettes à l'écran, légères à stocker et à télécharger.",
     emptyTitle: "Aucun document pour l'instant",
     emptyText: "Ajoutez vos statuts, procès-verbaux, guides…",
     download: "Télécharger",
@@ -650,7 +651,10 @@ export const fr: Dictionary = {
       `Vous êtes le dernier administrateur de ${name} : nommez d'abord quelqu'un d'autre administrateur.`,
     notificationsTitle: "Notifications",
     notificationsHint: "Les notifications apparaissent toujours dans Agora (icône cloche).",
-    emailNotifications: "M'envoyer aussi les notifications par e-mail",
+    emailNotifications: "E-mails",
+    emailDaily: "Un résumé par jour, seulement pour ce que je n'ai pas vu dans Agora",
+    emailInstant: "Chaque notification, tout de suite",
+    emailNever: "Aucun e-mail",
     emailNotConfigured:
       "Les e-mails ne sont pas configurés sur cet Agora (SMTP) : seules les notifications dans l'application sont envoyées.",
     calendarTitle: "Abonnement calendrier",
@@ -856,6 +860,14 @@ export const fr: Dictionary = {
     open: "Ouvrir",
     emailFooter:
       "Vous recevez cet e-mail car vous êtes membre de cette association sur Agora. Vous pouvez désactiver les e-mails dans Paramètres → Notifications.",
+    digestSubject: (n: number) =>
+      n === 1
+        ? "Agora : 1 notification que vous n'avez pas vue"
+        : `Agora : ${n} notifications que vous n'avez pas vues`,
+    digestIntro: "Voici ce que vous n'avez pas encore vu dans vos associations :",
+    digestMore: (n: number) => `…et ${n} autres.`,
+    digestFooter:
+      "Vous recevez au plus un résumé par jour, seulement pour ce que vous n'avez pas vu dans Agora. Vous pouvez le changer dans Paramètres → Notifications.",
     types: {
       "request.new": (d: Record<string, string>) => `${d.actor} sollicite le pôle ${d.pole} : ${d.title}`,
       "request.taken": (d: Record<string, string>) => `${d.actor} a pris en charge votre demande « ${d.title} »`,

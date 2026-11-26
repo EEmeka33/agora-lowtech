@@ -552,6 +552,7 @@ export const en = {
     urlPlaceholder: "https://…",
     fileOrLinkRequired: "Upload a file or provide a link.",
     tooLarge: (mb: number) => `File too large (max ${mb} MB).`,
+    photosReduced: "Photos are reduced to 1600 pixels: sharp on screen, light to store and to download.",
     emptyTitle: "No documents yet",
     emptyText: "Upload your statutes, minutes of meetings, guides…",
     download: "Download",
@@ -645,7 +646,10 @@ export const en = {
       `You are the last administrator of ${name}: make someone else administrator first.`,
     notificationsTitle: "Notifications",
     notificationsHint: "You always see notifications in Agora (bell icon).",
-    emailNotifications: "Also send me notifications by email",
+    emailNotifications: "Emails",
+    emailDaily: "One summary a day, only for what I have not seen in Agora",
+    emailInstant: "Each notification, right away",
+    emailNever: "No emails",
     emailNotConfigured: "Emails are not configured on this Agora (SMTP), only in-app notifications are sent.",
     calendarTitle: "Calendar subscription",
     calendarHint: "See the events of all your associations in Google Calendar, Apple Calendar or Outlook.",
@@ -848,6 +852,12 @@ export const en = {
     open: "Open",
     emailFooter:
       "You receive this email because you are a member of this association on Agora. You can turn emails off in Settings → Notifications.",
+    digestSubject: (n: number) =>
+      n === 1 ? "Agora: 1 notification you have not seen" : `Agora: ${n} notifications you have not seen`,
+    digestIntro: "Here is what you have not seen yet in your associations:",
+    digestMore: (n: number) => `…and ${n} more.`,
+    digestFooter:
+      "You receive at most one summary a day, only for what you have not seen in Agora. You can change this in Settings → Notifications.",
     types: {
       "request.new": (d: Record<string, string>) => `${d.actor} asks ${d.pole}: ${d.title}`,
       "request.taken": (d: Record<string, string>) => `${d.actor} took your request "${d.title}"`,

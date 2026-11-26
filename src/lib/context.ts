@@ -6,6 +6,7 @@ import { db } from "./db";
 import { getAccount, type Account } from "./auth";
 import { tenantDb, type TenantDb } from "./tenant";
 import { ASSOCIATION_COOKIE } from "./session-cookie";
+import { scheduleMaintenance } from "./maintenance";
 import type { Role } from "./constants";
 import type { Association } from "@/generated/prisma/client";
 
@@ -61,5 +62,6 @@ export async function requireContext(): Promise<Context> {
   }
   const ctx = await getContext();
   if (!ctx) redirect("/welcome");
+  await scheduleMaintenance();
   return ctx;
 }

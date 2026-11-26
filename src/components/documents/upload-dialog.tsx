@@ -74,7 +74,7 @@ export function UploadDialog({
       <Dialog open={open} onOpenChange={setOpen} title={t.documents.newDocument}>
         <form onSubmit={onSubmit} key={open ? "open" : "closed"}>
           <div className="space-y-4 px-5 py-5">
-            <Field label={t.documents.file} error={errors.file}>
+            <Field label={t.documents.file} error={errors.file} hint={t.documents.photosReduced}>
               <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-6 text-center text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary-soft/30">
                 <Upload className="size-5" />
                 <span className="max-w-full truncate font-medium text-foreground">

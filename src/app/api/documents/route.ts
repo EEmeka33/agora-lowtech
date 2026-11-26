@@ -6,6 +6,7 @@ import { getContext } from "@/lib/context";
 import { getI18n } from "@/lib/i18n/server";
 import { DOCUMENT_CATEGORIES } from "@/lib/constants";
 import { maxUploadBytes, uploadDir } from "@/lib/uploads";
+import { shrinkImage } from "@/lib/images";
 import { logActivity } from "@/lib/activity";
 import { isSameOrigin } from "@/lib/api";
 
@@ -42,19 +43,26 @@ export async function POST(request: NextRequest) {
 
   let stored: { storedName: string; fileName: string; mimeType: string; sizeBytes: number } | null = null;
   if (hasFile) {
-    const ext = path
+    let buffer = Buffer.from(await file.arrayBuffer());
+    let mimeType = file.type || "application/octet-stream";
+    let fileName = file.name;
+    let ext = path
       .extname(file.name)
       .replace(/[^a-zA-Z0-9.]/g, "")
       .slice(0, 10);
+    // Photos straight from a phone (4 to 12 MB) are reduced to what a screen shows.
+    const smaller = await shrinkImage(buffer, mimeType);
+    if (smaller) {
+      ({ buffer, mimeType } = smaller);
+      if (!(smaller.ext === ".jpg" ? /^\.jpe?g$/i : /^\.png$/i).test(ext)) {
+        fileName = path.basename(file.name, path.extname(file.name)) + smaller.ext;
+        ext = smaller.ext;
+      }
+    }
     const storedName = `${Date.now()}-${randomBytes(12).toString("hex")}${ext}`;
     await mkdir(uploadDir(), { recursive: true });
-    await writeFile(path.join(uploadDir(), storedName), Buffer.from(await file.arrayBuffer()));
-    stored = {
-      storedName,
-      fileName: file.name.slice(0, 200),
-      mimeType: file.type || "application/octet-stream",
-      sizeBytes: file.size,
-    };
+    await writeFile(path.join(uploadDir(), storedName), buffer);
+    stored = { storedName, fileName: fileName.slice(0, 200), mimeType, sizeBytes: buffer.length };
   }
 
   const category = DOCUMENT_CATEGORIES.includes(str("category") as never) ? str("category") : "OTHER";

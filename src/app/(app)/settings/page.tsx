@@ -133,7 +133,10 @@ export default async function SettingsPage(props: PageProps<"/settings">) {
               </div>
             </CardHeader>
             <CardContent>
-              <NotificationSettingsForm emailNotifications={me.emailNotifications} mailEnabled={mailEnabled()} />
+              <NotificationSettingsForm
+                emailMode={!me.emailNotifications ? "NEVER" : me.emailDigest ? "DAILY" : "INSTANT"}
+                mailEnabled={mailEnabled()}
+              />
             </CardContent>
           </Card>
           <Card>

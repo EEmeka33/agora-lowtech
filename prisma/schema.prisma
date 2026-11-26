@@ -38,6 +38,9 @@ model User {
   locale            String?
   /// Receive notifications by email too (when the instance has SMTP configured)
   emailNotifications Boolean  @default(true)
+  /// Group email notifications in one summary a day, only for what was not seen in Agora
+  emailDigest       Boolean   @default(true)
+  lastDigestAt      DateTime?
   /// SHA-256 of the private calendar feed token
   calendarTokenHash String?   @unique
   createdAt         DateTime  @default(now())

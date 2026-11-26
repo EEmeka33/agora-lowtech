@@ -23,8 +23,8 @@ type NotifyContext = {
 };
 
 /**
- * Sends an in-app notification to some members (never to the person who acted),
- * and an email when SMTP is configured and the person accepts emails.
+ * Sends an in-app notification to some members (never to the person who acted), and an email right away to
+ * those who chose it (SMTP configured). Most people get the daily summary instead: see sendDigests().
  */
 export async function notify(
   ctx: NotifyContext,
@@ -53,7 +53,7 @@ export async function notify(
   const origin = await baseUrl();
   after(async () => {
     const users = await db.user.findMany({
-      where: { id: { in: recipients }, emailNotifications: true, passwordHash: { not: null } },
+      where: { id: { in: recipients }, emailNotifications: true, emailDigest: false, passwordHash: { not: null } },
       select: { email: true, locale: true },
     });
     for (const u of users) {
@@ -75,6 +75,68 @@ export async function notify(
       });
     }
   });
+}
+
+const DAY = 24 * 60 * 60 * 1000;
+const DIGEST_LINES = 15;
+
+/**
+ * One email a day at most, listing the notifications the person has not seen in Agora since the previous
+ * summary. Nothing is sent when everything was already read: the email only replaces a visit.
+ */
+export async function sendDigests(origin: string, now = new Date()) {
+  if (!mailEnabled()) return 0;
+  const yesterday = new Date(now.getTime() - DAY);
+  const users = await db.user.findMany({
+    where: {
+      emailNotifications: true,
+      emailDigest: true,
+      passwordHash: { not: null },
+      OR: [{ lastDigestAt: null }, { lastDigestAt: { lte: yesterday } }],
+      notifications: { some: { readAt: null, createdAt: { gt: new Date(now.getTime() - 7 * DAY) } } },
+    },
+    select: { id: true, email: true, locale: true, lastDigestAt: true },
+  });
+  let sent = 0;
+  for (const u of users) {
+    const where = { userId: u.id, readAt: null, createdAt: { gt: u.lastDigestAt ?? yesterday } };
+    const [count, items] = await Promise.all([
+      db.notification.count({ where }),
+      db.notification.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        take: DIGEST_LINES,
+        select: { type: true, data: true, association: { select: { name: true, locale: true } } },
+      }),
+    ]);
+    if (count === 0) continue;
+    const fallback = items[0].association?.locale;
+    const locale = isLocale(u.locale) ? u.locale : isLocale(fallback) ? fallback : "en";
+    const t = dictionaries[locale];
+    const lines = items.map((n) => {
+      const text = renderNotification(n.type, JSON.parse(n.data) as Record<string, string>, locale);
+      return n.association ? `• ${n.association.name} — ${text}` : `• ${text}`;
+    });
+    if (count > items.length) lines.push(t.notifications.digestMore(count - items.length));
+    const body = `${t.notifications.digestIntro}\n\n${lines.join("\n")}`;
+    const url = `${origin}/notifications`;
+    const delivered = await sendMail({
+      to: u.email,
+      subject: t.notifications.digestSubject(count),
+      text: `${body}\n\n${url}\n\n— ${t.notifications.digestFooter}`,
+      html: emailLayout({
+        heading: "Agora",
+        body,
+        cta: t.notifications.open,
+        url,
+        footer: t.notifications.digestFooter,
+      }),
+    });
+    if (!delivered) continue;
+    await db.user.update({ where: { id: u.id }, data: { lastDigestAt: now } });
+    sent++;
+  }
+  return sent;
 }
 
 export function renderNotification(type: string, data: Record<string, string>, locale: string) {

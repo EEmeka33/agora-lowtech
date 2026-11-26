@@ -50,7 +50,9 @@ src/
     tenant.ts            Isolation between associations
     action-utils.ts      withUser / withAccount / assertRefs / reader
     permissions.ts       Who can do what
-    notifications.ts     In-app notifications and emails
+    notifications.ts     In-app notifications, emails and daily summaries
+    maintenance.ts       Daily cleanup and summaries, scheduled by page visits
+    images.ts            Reduces uploaded photos
     i18n/                English and French dictionaries
     …
 tests/
@@ -171,7 +173,12 @@ export async function logTime(_prev: ActionState, fd: FormData) {
 `notify(ctx, { userIds, type, data, link })` (`src/lib/notifications.ts`):
 
 1. creates one `Notification` row per recipient (never the person who acted);
-2. after the response is sent (`after()`), emails people who accept emails, if `SMTP_URL` is set.
+2. after the response is sent (`after()`), emails the people who chose "each notification, right away",
+   if `SMTP_URL` is set.
+
+By default people get **one summary a day** instead (`emailDigest`): `sendDigests()` lists the
+notifications they have **not read** in Agora since the previous summary, and sends nothing when everything
+was already seen.
 
 Texts are not stored: `renderNotification(type, data, locale)` builds the sentence from the dictionaries,
 so each person reads notifications in their own language. The bell does not poll: it refreshes
@@ -186,6 +193,24 @@ Who is notified:
 | Task assigned, task comment                                  | Assignee, task creator and previous commenters |
 | New event (when "notify" is checked), new vote, announcement | Members concerned (whole association or pole)  |
 | Someone joined with a code                                   | Administrators                                 |
+
+## Maintenance
+
+There is no cron job and no timer. `requireContext()` calls `scheduleMaintenance()`
+(`src/lib/maintenance.ts`), which runs after the response, at most once an hour per server process for the
+daily summaries and once a day for `cleanup()`:
+
+- read notifications after 90 days, every notification and the activity history after `RETENTION_DAYS`
+  (365 by default);
+- expired sessions, and one-time links used or expired more than 30 days ago;
+- uploaded files that no document points to (left by a deleted association or account).
+
+Money, documents, minutes and everything members wrote are never deleted. When nobody uses Agora,
+nothing runs.
+
+Uploaded photos (JPEG, PNG, WebP over 300 KB) are reduced by `shrinkImage()` (`src/lib/images.ts`) to
+1600 px on their longest side, without their metadata (GPS position included). It uses sharp, which is
+installed with Next.js; without it, files are stored as they are.
 
 ## Data model
 

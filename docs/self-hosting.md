@@ -123,6 +123,8 @@ All variables are optional; defaults work for a local installation.
 | `SECURE_COOKIES`         | `false`                      | Set to `true` behind HTTPS                                                                                                                                                                           |
 | `SIGNUP_MODE`            | `open`                       | `open`: anyone can create an account. `invite`: a valid join code is required (the very first account is always allowed). `closed`: no sign-up, administrators add members and send invitation links |
 | `ALLOW_NEW_ASSOCIATIONS` | `true`                       | `false`: only the first association can be created (single-association instance)                                                                                                                     |
+| `RETENTION_DAYS`         | `365`                        | How long the activity history is kept (read notifications: 90 days). Money, documents and minutes are never deleted                                                                                  |
+| `AGORA_MAX_MEMORY_MB`    | `192`                        | JavaScript memory cap of the server started by `npm start`                                                                                                                                           |
 | `SMTP_URL`               | —                            | Email server, see below                                                                                                                                                                              |
 | `MAIL_FROM`              | `Agora <no-reply@localhost>` | Sender of emails                                                                                                                                                                                     |
 
@@ -151,7 +153,8 @@ In development, `SMTP_URL="log"` prints emails in the terminal instead of sendin
 
 With email configured:
 
-- members receive their notifications by email too (they can turn it off in Settings → Notifications);
+- members receive **one summary a day**, only with the notifications they have not seen in Agora (in
+  Settings → Notifications they can choose each notification right away, or no emails);
 - **Forgot password?** on the sign-in page sends a reset link valid for one hour.
 
 ## Backups and restore

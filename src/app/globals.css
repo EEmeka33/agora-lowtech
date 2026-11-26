@@ -166,7 +166,8 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   /* The system font of each device (San Francisco, Segoe UI, Roboto…): nothing to download. */
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  --font-sans:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
   --radius-xl: var(--radius);
 }
 

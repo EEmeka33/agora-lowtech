@@ -4,7 +4,7 @@ import * as React from "react";
 import { CalendarPlus, Copy, LogOut, Monitor, Smartphone } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { ActionForm, SubmitButton } from "@/components/forms/action-form";
-import { CheckboxField, TextField } from "@/components/forms/fields";
+import { SelectField, TextField } from "@/components/forms/fields";
 import { ConfirmButton } from "@/components/forms/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -145,20 +145,25 @@ export function DeleteAccountForm() {
 }
 
 export function NotificationSettingsForm({
-  emailNotifications,
+  emailMode,
   mailEnabled,
 }: {
-  emailNotifications: boolean;
+  emailMode: "DAILY" | "INSTANT" | "NEVER";
   mailEnabled: boolean;
 }) {
   const t = useT();
   return (
     <ActionForm action={updateNotificationSettings} className="max-w-xl space-y-3">
-      <CheckboxField
-        name="emailNotifications"
-        defaultChecked={emailNotifications}
+      <SelectField
+        name="emailMode"
+        defaultValue={emailMode}
         label={t.settings.emailNotifications}
         hint={mailEnabled ? undefined : t.settings.emailNotConfigured}
+        options={[
+          { value: "DAILY", label: t.settings.emailDaily },
+          { value: "INSTANT", label: t.settings.emailInstant },
+          { value: "NEVER", label: t.settings.emailNever },
+        ]}
       />
       <SubmitButton size="sm">{t.common.save}</SubmitButton>
     </ActionForm>

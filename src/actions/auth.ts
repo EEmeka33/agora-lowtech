@@ -279,9 +279,10 @@ export async function revokeOtherSessions() {
 
 export async function updateNotificationSettings(_prev: ActionState, formData: FormData): Promise<ActionState> {
   return withAccount(async ({ account, t }) => {
+    const mode = reader(formData).oneOf("emailMode", ["DAILY", "INSTANT", "NEVER"], "DAILY");
     await db.user.update({
       where: { id: account.id },
-      data: { emailNotifications: reader(formData).bool("emailNotifications") },
+      data: { emailNotifications: mode !== "NEVER", emailDigest: mode === "DAILY" },
     });
     return ok(t.common.saved);
   });

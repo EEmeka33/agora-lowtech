@@ -61,8 +61,14 @@ export async function MonthlyChart({ data, currency }: { data: Month[]; currency
                 title={`${m.label}\n${t.finance.income}: ${money(m.income)}\n${t.finance.expenses}: ${money(m.expense)}\n${t.finance.balance}: ${money(m.income - m.expense)}`}
               >
                 <div className="flex flex-1 items-end justify-center gap-0.5 rounded-t-md px-[18%] group-hover:bg-hover">
-                  <span className="w-full max-w-6 rounded-t bg-[var(--chart-income)]" style={{ height: height(m.income) }} />
-                  <span className="w-full max-w-6 rounded-t bg-[var(--chart-expense)]" style={{ height: height(m.expense) }} />
+                  <span
+                    className="w-full max-w-6 rounded-t bg-[var(--chart-income)]"
+                    style={{ height: height(m.income) }}
+                  />
+                  <span
+                    className="w-full max-w-6 rounded-t bg-[var(--chart-expense)]"
+                    style={{ height: height(m.expense) }}
+                  />
                 </div>
                 <span className="h-6 truncate pt-1.5 text-center text-[11px] text-muted-foreground capitalize">
                   {m.label}
