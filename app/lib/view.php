@@ -250,7 +250,7 @@ function tabs_html(array $tabs, string $active): string
 {
     $html = '<nav class="tabs">';
     foreach ($tabs as $key => [$label, $href]) {
-        $html .= '<a href="' . h($href) . '"' . ($key === $active ? ' aria-current="page"' : '') . '>' . h($label) . '</a>';
+        $html .= '<a href="' . h($href) . '"' . ($key === $active ? ' aria-current="page"' : '') . '>' . h($label) . "</a>\n";
     }
     return $html . '</nav>';
 }

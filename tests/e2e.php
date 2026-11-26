@@ -259,6 +259,22 @@ test('backup and exports', function () use ($camille) {
     check(str_contains($camille->get('/members.csv')->body, 'Yanis Benali'));
 });
 
+test('emails: instant notifications, daily digest choice, password reset', function () use ($camille, $yanis, $dir, $base, &$ids) {
+    $yanis->post('/settings/notifications', ['email_mode' => 'INSTANT']);
+    $camille->post('/tasks', ['title' => 'Oil the bike chains', 'assignee_id' => $ids['yanis']]);
+    usleep(200000);
+    $log = (string) @file_get_contents("$dir/mail.log");
+    check(str_contains($log, 'To: yanis@example.org') && str_contains($log, 'assigned you "Oil the bike chains"'), 'instant email sent');
+    $visitor = new Browser($base);
+    $visitor->post('/forgot', ['email' => 'lea@example.org']);
+    check($visitor->see('If an account exists'), 'same answer whatever the email');
+    usleep(200000);
+    $link = preg_match_all('#(http://\S+/invite/[A-Za-z0-9_-]+)#', (string) file_get_contents("$dir/mail.log"), $m) ? end($m[1]) : null;
+    check($link !== null, 'reset link emailed');
+    $visitor->post((string) parse_url((string) $link, PHP_URL_PATH), ['password' => 'a-brand-new-sentence', 'confirm' => 'a-brand-new-sentence']);
+    check_same('/', $visitor->path(), 'password reset works');
+});
+
 test('every page answers, in both languages', function () use ($camille, $base) {
     $camille->get('/finance');
     $tx = (int) $camille->find('#href="/finance/(\d+)\?#');
