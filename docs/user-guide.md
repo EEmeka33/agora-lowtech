@@ -21,10 +21,12 @@ Agora works in any browser, on a computer or a phone, even an old one, and needs
 
 ## A few habits of the interface
 
-- Forms that create something are folded under a green title (for example **▶ New task**): click it to open.
-- Deleting always asks for confirmation: click **Delete…**, then **Yes, delete**.
-- After each action the page reloads and a message at the top confirms it.
-- The bottom of every page shows its weight and how long the server took to build it.
+- Forms that create something open from a green button (for example **+ New task**).
+- Deleting always asks for confirmation.
+- Filters and the status menu of a task apply as soon as you change them.
+- After each action a message at the top of the page confirms it.
+- Your name, top right, opens your settings, your associations and *Sign out*. On a phone, **Menu** (top left)
+  opens the navigation.
 - Pages are made to be printed: menus and buttons disappear on paper.
 
 ## Getting started
@@ -51,8 +53,9 @@ Pole **leads** can edit their pole, its projects, and give its requests to someo
 ## Founding checklist
 
 *Founding* lists the steps to create an association (written for a French "association loi 1901", easy to
-adapt): purpose and name, statutes, constitutive assembly, declaration, bank account, insurance… Open a step
-(*Details*) to read it, mark it done, or edit it (person in charge, date, notes, useful link). Mark a step
+adapt): purpose and name, statutes, constitutive assembly, declaration, bank account, insurance… Tick a step
+to mark it done; open it to read it or edit it (person in charge, date, notes, useful link). Finished themes
+fold up. Mark a step
 **Skipped** if it doesn't apply to you. The dashboard shows the progress until everything is done.
 
 ## Structure and poles
@@ -88,8 +91,8 @@ A project has a lead, a team, a pole, dates, a budget, milestones and progress u
 
 ## Tasks
 
-*Tasks* shows a **board** with one column per status; the ◀ ▶ buttons move a card to the previous or next
-column. Switch to the **list** with *View*. Filter by project, pole, person or priority. Done tasks stay on
+*Tasks* shows a **board** with one column per status; the menu on each card changes its status. Switch to the
+**list** with the button at the top. Filter by project, pole, person or priority. Done tasks stay on
 the board for 30 days. On a task: comments, status buttons, and *Log time*.
 
 ## Events and meetings

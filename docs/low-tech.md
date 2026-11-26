@@ -8,11 +8,12 @@ on its own, and the [exercises](#exercises) at the end use the code of this repo
 - [2. The starting point](#2-the-starting-point)
 - [3. What changed and why](#what-changed-and-why)
 - [4. What was lost](#4-what-was-lost)
-- [5. Measurements](#measurements)
-- [6. From bytes to energy](#6-from-bytes-to-energy)
-- [7. Limits: is it really low-tech?](#7-limits-is-it-really-low-tech)
-- [8. Course material](#8-course-material)
-- [9. Further reading](#9-further-reading)
+- [5. Second iteration: when low-tech went too far](#5-second-iteration-when-low-tech-went-too-far)
+- [6. Measurements](#measurements)
+- [7. From bytes to energy](#7-from-bytes-to-energy)
+- [8. Limits: is it really low-tech?](#8-limits-is-it-really-low-tech)
+- [9. Course material](#9-course-material)
+- [10. Further reading](#10-further-reading)
 
 ---
 
@@ -29,7 +30,7 @@ For a web application, these three questions become concrete ones:
 | --- | --- | --- |
 | **Useful** | Does this feature serve the association, or the developer's taste? | Every feature of the original was kept; decoration was removed (icons, avatars, colours per pole). |
 | **Accessible** | Can anyone install it, use it on any device, understand and change the code? | No dependencies, no build; works in any browser, including text browsers and 10-year-old phones; code that a beginner can read. |
-| **Sustainable** | How much does it consume, for how long will it keep working? | Pages 70 times lighter, server work 13 times smaller, few moving parts that can break with time. |
+| **Sustainable** | How much does it consume, for how long will it keep working? | Pages 40 to 60 times lighter, server work 13 times smaller, few moving parts that can break with time. |
 
 The biggest environmental lever of digital technology is not the electricity of servers but the
 **manufacturing of devices**. In France, the ADEME–Arcep study on the environmental impact of digital technology
@@ -73,26 +74,31 @@ for the *deployment* story: associations can upload the folder to a cheap shared
 process to keep alive, which is exactly how established association software (Paheko, Galette) works. Python
 or Go would need a server you control. Discuss this trade-off in class: it is a real one.
 
-### 3.2 No JavaScript
+### 3.2 HTML first, JavaScript optional
 
-The interface is made only of **links (GET) and forms (POST)**. The browser does what it has done since 1995:
-display HTML and send forms. The Content-Security-Policy header even forbids scripts (`default-src 'none'`),
-so the "no JavaScript" rule is enforced by the browser, and the test suite checks that no page contains one.
+The interface is made of **links (GET) and forms (POST)**. The browser does what it has done since 1995:
+display HTML and send forms. **Every page works without JavaScript.** One small script of our own
+(`public/app.js`, 1.7 KB, about 40 lines, no library) adds comfort where it really helps; if it doesn't load,
+nothing breaks. This is called *progressive enhancement*. The Content-Security-Policy header allows that script
+and nothing else (`script-src 'self'`): no inline code, no third-party script.
 
-How the interactive parts were replaced:
+(The first version had no JavaScript at all. Section 5 explains why that went too far.)
 
-| Original (JavaScript) | Low-tech (HTML) |
+How the interactive parts of the original were replaced:
+
+| Original (JavaScript) | Low-tech (HTML, plus the optional script) |
 | --- | --- |
-| Drag and drop between columns of the task board | ◀ ▶ buttons on each card: two tiny forms |
+| Drag and drop between columns of the task board | A status menu on each card; the script applies it at once, without the script a "Move" button does |
 | Modal dialogs to create things | `<details>`: a native disclosure widget, open/closed without code |
-| "Are you sure?" confirmation dialogs | A `<details>` whose content is the real "Yes, delete" button |
+| "Are you sure?" confirmation dialogs | The browser's own `confirm()` dialog; without the script, the server shows a confirmation page |
 | Toast notifications | A message shown at the top of the next page (passed in a short-lived cookie) |
-| Command palette (Ctrl+K) | A search form in the header, and a search page you can bookmark |
+| Command palette (Ctrl+K) | A search field in the header (the `/` key focuses it), and a search page you can bookmark |
 | Live form validation | HTML attributes (`required`, `type="email"`, `min`) and the server's answer, shown next to the fields |
-| Progress rings, charts (Recharts) | Native `<progress>` and `<meter>` elements, and bars drawn with text characters (`█▌`) |
+| Progress rings, charts (Recharts) | Native `<progress>` elements styled by CSS |
 | Gantt timeline (JavaScript) | A table: one cell per month, coloured by CSS |
 | Bell that polls the server every 60 s | A count computed when the page loads |
 | Dark mode toggle | The device's preference (`prefers-color-scheme`), no toggle |
+| A menu that slides in on phones | A checkbox and a CSS rule (`#menu-toggle:checked ~ .shell #nav`) |
 
 After each POST, the server answers with a redirect (*Post/Redirect/Get*): reloading a page never submits a
 form twice, and the back button works.
@@ -100,7 +106,8 @@ form twice, and the back button works.
 ### 3.3 Light pages
 
 - **No web font, no icon, no image** in the interface: the system font of each device is used.
-- **One stylesheet** of 12 KB (3.4 KB compressed), cached for a year. The pages also work *without* it.
+- **One stylesheet** of 25 KB (6 KB compressed) and **one script** of 1.7 KB (1 KB compressed), cached for a
+  year. The pages also work *without* them.
 - **Compression and caching**: HTML is compressed (a 10 KB page travels as about 3 KB) and has an ETag, so an
   unchanged page is answered with "304 Not modified" and no body.
 - **Print stylesheet**: menus and buttons disappear on paper. Meeting minutes can be printed and signed.
@@ -110,7 +117,8 @@ form twice, and the back button works.
   weighed **71 KB**. Moving editing to its own page brought it to **20 KB**. Interesting detail for class:
   compressed, the difference was much smaller (4.9 KB against 3.9 KB), because repeated forms compress well;
   but the server still had to build, and the browser still had to parse, all those forms.
-- The footer of every page shows **its own weight** and the time it took to build it.
+- The footer can show **the weight of each page** and the time it took to build it (`show_page_weight` in
+  `config.php`): useful in a course, off by default.
 
 ### 3.4 Sober by default
 
@@ -121,8 +129,7 @@ form twice, and the back button works.
 - **Data has an expiry date**: read notifications and activity older than a year are deleted automatically
   (`retention_days`). Expired sessions and links too. Less data means smaller backups and less to protect.
 - **No live updates**: what's new is shown when you open a page. The application is calm.
-- The README screenshots are dithered to 8 colours (like [Low-tech Magazine](https://solar.lowtechmagazine.com)'s
-  images): 12 to 31 KB each instead of 64 to 184 KB.
+- The README screenshots are reduced to 96 colours: 19 to 46 KB each instead of 64 to 184 KB.
 
 ### 3.5 Simple operations
 
@@ -143,10 +150,11 @@ Low-tech is not a reason to lower quality where it matters:
 - **Privacy between associations**: every query of association data filters on `association_id`; the tests
   check that a member of another association gets "404 Not found" everywhere.
 - **Two languages**, and the way to add more: one file per language in `app/lang/`.
-- **Tests**: 400+ checks, written in plain PHP, run in about 3 seconds, including a **low-tech budget**: no page
-  may contain a script, an inline style or an external resource, or weigh more than 30 KB.
+- **Tests**: 650 checks, written in plain PHP, run in about 3 seconds, including a **low-tech budget**: no page
+  may contain inline code, an inline style, a script other than `app.js` or an external resource, or weigh more
+  than 30 KB; the stylesheet must stay under 25 KB and the script under 3 KB.
 - **Accessibility**: semantic HTML (headings, tables, labels around inputs, `aria-current`), a "skip to
-  content" link, the content before the menu in the HTML, readable without styles.
+  content" link, keyboard-friendly menus, readable without styles.
 
 ## 4. What was lost
 
@@ -164,9 +172,45 @@ Being honest about trade-offs is part of the method. Things that are worse, or g
 - **TypeScript's safety net** is gone; it is replaced by small functions, `declare(strict_types=1)` in tests,
   and an end-to-end test that clicks through every page.
 
+## 5. Second iteration: when low-tech went too far
+
+The first version followed the principles to the letter: **zero JavaScript**, no decoration at all, charts
+drawn with text characters (`█▌`), the weight of every page in the footer, a menu of 16 entries, every
+"create" form in a box, every deletion behind a two-step box, ◀ ▶ arrows to move a task. It was light and
+principled. The first person to use it for a real association said:
+
+> *It might be a bit too much: the website isn't practical and it's ugly. It also seems broken: it doesn't fit
+> in the window for no reason.*
+
+All three were true:
+
+- **Broken**: the menu column was forced to the full height of the window, on top of the header and the footer,
+  so every page was taller than the screen and always scrolled. On phones, a few pages were wider than the
+  screen because grid columns could not shrink below their content. Both are classic CSS mistakes; the layout is
+  now checked automatically at five widths, from 360 to 1440 pixels.
+- **Not practical**: two clicks to delete anything, a "Filter" button next to every filter, one arrow per column
+  to move a task, a founding checklist of 16 boxes, and a menu where everything was equally important.
+- **Ugly**: underlined links everywhere, outlined buttons, text-character charts, no hierarchy between what
+  matters and what doesn't.
+
+What changed in the second version, and why:
+
+| Change | Why it is still low-tech |
+| --- | --- |
+| A 1.7 KB optional script (confirmations, instant filters, menus that close) | Nothing depends on it; it is downloaded once; it replaced clicks and pages the server had to build. |
+| A real visual design (cards, buttons, spacing, soft colours, progress bars) | CSS costs almost nothing to run and is cached; a tool nobody wants to use is not *useful*. |
+| A shorter menu (12 entries), a user menu, a phone menu button | Less to read, fewer wrong clicks. |
+| One line per founding step, finished themes folded, a page per step | Shorter pages, less HTML sent. |
+| The page weight hidden from the footer by default | It talked about the tool instead of helping people use it. |
+
+**The lesson for the course**: low-tech is a *means* (useful, accessible, sustainable), not a purity contest.
+Measured honestly, the second version is barely heavier (about 3 KB more on the very first visit, nothing after)
+and much more pleasant. The right question is not "can we remove it?" but "what does it cost, and what does it
+give?" Ask your students where they would draw the line, and why.
+
 <a id="measurements"></a>
 
-## 5. Measurements
+## 6. Measurements
 
 ### Results
 
@@ -178,13 +222,13 @@ one association of 9 members with projects, tasks, events, votes and transaction
 | Packages installed | 590 | 0 | — |
 | Disk taken by dependencies | 1.2 GB | 0 | — |
 | Install + build time | 17 s + 16 s | 0 s | — |
-| Size of the code you can read | ~20,000 lines | ~8,500 lines | ÷ 2.3 |
-| Page weight, empty cache (dashboard) | 610 KB, 72 requests | 7 KB, 2 requests | ÷ 85 |
-| Page weight, empty cache (other pages) | 445–585 KB, 58–66 requests | 6–8 KB, 2 requests | ÷ 70 |
-| JavaScript per page | 300–450 KB | 0 | — |
-| Page weight, stylesheet cached | ~120 KB, 73 requests | 3.5 KB | ÷ 35 |
-| HTML of the dashboard (uncompressed) | 118 KB | 9 KB | ÷ 13 |
-| Server CPU per page (dashboard, tasks) | 21–26 ms | 1.6–1.7 ms | ÷ 13 to 15 |
+| Size of the code you can read | ~20,000 lines | ~8,900 lines | ÷ 2.2 |
+| Page weight, empty cache (dashboard) | 610 KB, 72 requests | 10.6 KB, 3 requests | ÷ 57 |
+| Page weight, empty cache (other pages) | 445–585 KB, 58–66 requests | 10–12 KB, 3 requests | ÷ 45 to 50 |
+| JavaScript per page | 300–450 KB, required | 1 KB (compressed), optional, downloaded once | — |
+| Page weight, stylesheet and script cached | ~120 KB, 73 requests | 3.5 KB | ÷ 35 |
+| HTML of the dashboard (uncompressed) | 118 KB | 10 KB | ÷ 12 |
+| Server CPU per page (dashboard, tasks) | 21–26 ms | 1.5–1.8 ms | ÷ 13 to 15 |
 | Server memory | 290 MB after browsing, 950 MB after 600 requests | ~20 MB per PHP worker; nothing when idle with PHP-FPM | ÷ 15 or more |
 | Time to run the whole test suite | Vitest + a Playwright story, minutes (needs a build) | ~3 s | — |
 
@@ -194,7 +238,7 @@ All measurements can be repeated by students, on any computer:
 
 1. **Page weight**: open the browser's developer tools (F12), tab *Network*, tick *Disable cache*, reload.
    Read the bottom line ("transferred" and "resources"). Untick *Disable cache* and reload for the cached weight.
-   The footer of each Agora page also shows its weight.
+   Set `'show_page_weight' => true` in `config.php` to see each page's weight in its footer.
 2. **JavaScript**: same tab, filter on *JS*.
 3. **Server CPU per page**: send 300 requests and read the CPU time of the server process in
    `/proc/<pid>/stat` (fields 14 to 17, in hundredths of a second) before and after. On a Raspberry Pi, a
@@ -207,7 +251,7 @@ All measurements can be repeated by students, on any computer:
 much less. CPU time is not energy, but on the same machine they are roughly proportional. The demo data of the
 two versions are similar, not identical.
 
-## 6. From bytes to energy
+## 7. From bytes to energy
 
 It is tempting to convert kilobytes into grams of CO₂. The published models disagree by a factor of 10 to 100,
 because the energy of a network barely depends on the data that goes through it at a given moment. Use them,
@@ -218,7 +262,7 @@ A **worked example** that holds without any model: an association of 30 members,
 
 | | Original | Low-tech |
 | --- | --- | --- |
-| Data downloaded per year (≈120 KB per page with cache, 500 KB without) | ~16 to 66 GB | ~0.5 to 1 GB |
+| Data downloaded per year (≈120 KB per page with cache, 500 KB without; 3.5 KB and 11 KB) | ~16 to 66 GB | ~0.5 to 1.5 GB |
 | Server CPU time per year (≈23 ms vs 1.7 ms per page) | ~50 minutes | ~4 minutes |
 | JavaScript each member's device must download and run | 300–450 KB per visit, kept running while browsing | none |
 
@@ -227,7 +271,7 @@ The server side is tiny in both cases: an association is a small workload. The d
 JavaScript per page; the low-tech version runs on whatever device members already have. That is where most of
 the footprint lies (section 1).
 
-## 7. Limits: is it really low-tech?
+## 8. Limits: is it really low-tech?
 
 Questions without a single answer, to discuss:
 
@@ -243,36 +287,39 @@ Questions without a single answer, to discuss:
 - **Accessibility vs. comfort**: people used to modern apps may find it austere. Low-tech that nobody uses is
   not useful.
 
-## 8. Course material
+## 9. Course material
 
 ### A possible sequence (3 × 2 hours)
 
 1. **Diagnose** (2 h): install the [original Agora](https://github.com/EEmeka33/agora) and this version. Measure
-   both (section 5). List every part of the original stack and say what it is for.
+   both (section 6). List every part of the original stack and say what it is for.
 2. **Read and discuss** (2 h): read `app/routes.php` (the whole surface of the app), `app/schema.sql` (the whole
-   data model), one page (`app/pages/tasks.php` and `app/views/tasks/`). Discuss sections 4 and 7.
+   data model), one page (`app/pages/tasks.php` and `app/views/tasks/`). Discuss sections 4, 5 and 8.
 3. **Build** (2 h): pick one or two exercises below, in small groups.
 
 ### Exercises
 
 Ordered from easiest to hardest. Run `php tests/run.php` after each change.
 
-1. **Measure.** Fill the table of section 5 on your own computer. Then throttle the network to "Slow 3G" in the
+1. **Measure.** Fill the table of section 6 on your own computer. Then throttle the network to "Slow 3G" in the
    developer tools and time the opening of the dashboard in both versions.
-2. **Use it without a mouse, without styles, without a screen.** Navigate with the keyboard only; disable CSS
-   (Firefox: *View → Page Style → No Style*); try `lynx http://localhost:8080` or `w3m`; try a screen reader.
-   Note what breaks and propose fixes.
+2. **Use it without a mouse, without styles, without JavaScript, without a screen.** Navigate with the keyboard
+   only; disable CSS (Firefox: *View → Page Style → No Style*); disable JavaScript and delete something (the
+   server asks for confirmation instead of the browser); try `lynx http://localhost:8080` or `w3m`; try a screen
+   reader. Note what breaks and propose fixes.
 3. **Paper.** Print the page of a meeting (agenda and minutes) and of the finance page. Improve the print
    stylesheet at the end of `public/style.css` so that a printed page is useful as an official record.
 4. **Run it on a Raspberry Pi or an old laptop.** Follow `docs/self-hosting.md`. Measure the power with a
    wattmeter at rest and while 10 people use it. Compare with the power of a phone charger.
 5. **Translate.** Add a language: copy `app/lang/fr.php`, translate, add it to `LOCALES` in
    `app/lib/constants.php`. How long did it take? What does it say about repairability?
-6. **Remove something.** Find a feature or a piece of code you think is not needed. Argue for removing it, remove
-   it, and measure what was gained (lines, kilobytes, milliseconds).
+6. **Remove something, or add it back.** Find a feature or a piece of code you think is not needed, argue for
+   removing it, remove it, and measure what was gained (lines, kilobytes, milliseconds). Then do the opposite
+   with something section 5 removed or kept small (drag and drop on the task board, for example): what would it
+   cost, and what would it give? Where do you draw the line?
 7. **Add a feature the low-tech way: a tool library.** Low-tech associations often lend tools (drills, sewing
-   machines, bike stands). Add a `tools` table, a page listing them and a form to lend/return one, without
-   JavaScript. Follow the recipe in `docs/architecture.md`. Check the low-tech budget test still passes.
+   machines, bike stands). Add a `tools` table, a page listing them and a form to lend/return one, working
+   without JavaScript. Follow the recipe in `docs/architecture.md`. Check the low-tech budget test still passes.
 8. **A repair log for the repair café.** Record each object brought (type, weight, repaired or not) and show,
    on the pole page, the kilograms of waste avoided this year. Present it with text bars, like the finance page.
 9. **Solar mode.** [Low-tech Magazine's website](https://solar.lowtechmagazine.com) runs on a solar panel and
@@ -284,11 +331,12 @@ Ordered from easiest to hardest. Run `php tests/run.php` after each change.
 ### Questions for an essay or an oral exam
 
 - Which of the original's dependencies was the hardest to give up, and why?
-- Is "zero JavaScript" a principle or a means? When would a little JavaScript be justified?
+- Is "zero JavaScript" a principle or a means? This project first said yes, then changed its mind (section 5):
+  who was right?
 - How would you decide, for an association you know, between this tool, a spreadsheet and a notebook?
 - What would make this software last 20 years? What could stop it?
 
-## 9. Further reading
+## 10. Further reading
 
 - Low-tech Lab — [lowtechlab.org](https://lowtechlab.org): definitions, tutorials, the "useful, accessible,
   sustainable" triad.

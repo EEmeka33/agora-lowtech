@@ -6,13 +6,13 @@
  * Development server:  php -S localhost:8080 -t public public/index.php
  */
 
-// PHP's built-in server: serve the stylesheet (and other real files) directly,
-// with long-term caching and compression.
+// PHP's built-in server: serve the stylesheet and the script directly,
+// with long-term caching and compression (their address changes when they do).
 if (PHP_SAPI === 'cli-server') {
     $file = __DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     if ($file !== __FILE__ && is_file($file)) {
-        if (str_ends_with($file, '.css')) {
-            header('Content-Type: text/css; charset=utf-8');
+        if (str_ends_with($file, '.css') || str_ends_with($file, '.js')) {
+            header('Content-Type: ' . (str_ends_with($file, '.css') ? 'text/css' : 'text/javascript') . '; charset=utf-8');
             header('Cache-Control: public, max-age=31536000, immutable');
             $css = file_get_contents($file);
             if (str_contains($_SERVER['HTTP_ACCEPT_ENCODING'] ?? '', 'gzip')) {

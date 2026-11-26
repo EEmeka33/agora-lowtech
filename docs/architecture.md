@@ -5,7 +5,7 @@ SQL and PHP; nothing else.
 
 - [Folders](#folders)
 - [How a request flows](#how-a-request-flows)
-- [Pages and forms without JavaScript](#pages-and-forms-without-javascript)
+- [Pages and forms (JavaScript optional)](#pages-and-forms-javascript-optional)
 - [Accounts, sessions and associations](#accounts-sessions-and-associations)
 - [Isolation between associations](#isolation-between-associations)
 - [Permissions](#permissions)
@@ -22,6 +22,7 @@ SQL and PHP; nothing else.
 public/              The only folder served on the web
   index.php          Single entry point (front controller)
   style.css          The only stylesheet
+  app.js             The only script: optional comfort, 1.7 KB
 app/
   boot.php           Loads the configuration and every library file
   routes.php         Every address of the site, in one list
@@ -65,7 +66,7 @@ functions. Everything a page does can be followed by reading from `routes.php` t
 5. After the page is sent, `after_response()` sends the queued emails and, at most once an hour, runs the
    maintenance (digests, cleanup).
 
-## Pages and forms without JavaScript
+## Pages and forms (JavaScript optional)
 
 **Showing**: a GET handler loads data and renders a template. Templates are HTML with
 `<?= h($value) ?>` wherever a value is printed: `h()` escapes it, so text typed by members is never run as code.
@@ -88,6 +89,16 @@ rendered again with status 422, the errors next to the fields and what the perso
 | `confirm_form('/tasks/12/delete', 'Delete')` | a `<details>` that reveals the real "Yes, delete" button |
 | `csrf_field()`, `back_field()` | the hidden anti-forgery token; the page to come back to (`back()`) |
 | `status_badge()`, `progress_html()`, `due_html()`, `person()`, `text_bar()` | small pieces used everywhere |
+
+**Irreversible actions** (delete, remove, revoke, cancel, release) use `confirm_form()`. With JavaScript, the
+browser asks "are you sure?" before sending the form. Without it, the router notices that the address ends in
+`/delete` (or `/remove`…) and that the form was not confirmed, and shows a confirmation page that sends the same
+form again (`needs_confirmation()` in `app/lib/http.php`). Handlers don't have to do anything.
+
+**The optional script** (`public/app.js`, about 40 lines) also submits filters and task status menus as soon as
+they change (forms with the class `auto` or `move`; their button is hidden when the script runs) and closes the
+user menu on a click elsewhere. The phone menu needs no script: it is a checkbox that CSS uses to show the
+navigation.
 
 **Bigger forms** (create a task, an event…) sit in a `<details class="panel">`: closed by default, open after
 an error. Editing an item that appears in a long list has its own page (`GET /finance/{id}`), so that lists
@@ -171,7 +182,8 @@ placeholders. To add a language: copy `fr.php`, translate it, add its code to `L
   shown in the configured time zone.
 - **Money** is stored in cents (`amount_cents`).
 - **Enumerated values** are UPPERCASE text, listed in `app/lib/constants.php`.
-- **No inline styles and no scripts**: the Content-Security-Policy blocks them, and the tests check it.
+- **No inline styles and no inline scripts**: the Content-Security-Policy blocks them, and the tests check it.
+  The only script is `public/app.js`; every page must keep working without it.
 - Comments explain *why*, in plain English.
 
 ## Changing the database

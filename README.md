@@ -4,9 +4,10 @@
 
 Founding checklist, structure, poles, requests between poles, projects, tasks, events, votes, volunteering,
 finance, documents and members, in English and French. It runs on PHP and a single SQLite file, with
-**no dependencies, no build step and no JavaScript**.
+**no dependencies and no build step**. Pages weigh about 10 KB and **work without JavaScript**; a 1.7 KB
+optional script only adds comfort.
 
-![Dashboard, dithered to 8 colours: 29 KB](docs/screenshots/dashboard.png)
+![Dashboard](docs/screenshots/dashboard.png)
 
 ---
 
@@ -23,11 +24,11 @@ low-tech, and as a teaching example for a course on low-tech.
 | -------------------------------------- | ----------------------------- | ----------------------------------------- |
 | Dependencies to install                | 590 packages, 1.2 GB          | **0**                                     |
 | Build step                             | 16 s, 109 MB output           | **none**                                  |
-| Source code                            | ~20,000 lines (TS, TSX, CSS)  | **~8,500 lines** (PHP, CSS, SQL)          |
-| Downloaded per page, empty cache       | 445–610 KB, 58–72 requests    | **6–8 KB, 2 requests**                    |
-| … of which JavaScript                  | 300–450 KB                    | **0**                                     |
-| Downloaded per page, cached stylesheet | ~120 KB, 73 requests          | **3.5 KB**                                |
-| Server CPU time per page               | 21–26 ms                      | **1.6–1.7 ms**                            |
+| Source code                            | ~20,000 lines (TS, TSX, CSS)  | **~8,900 lines** (PHP, CSS, SQL, JS)      |
+| Downloaded per page, empty cache       | 445–610 KB, 58–72 requests    | **10–12 KB, 3 requests**                  |
+| … of which JavaScript                  | 300–450 KB, required          | **1 KB, optional**                        |
+| Downloaded per page, then              | ~120 KB, 73 requests          | **3.5 KB** (stylesheet and script cached) |
+| Server CPU time per page               | 21–26 ms                      | **1.5–1.8 ms**                            |
 | Server memory                          | ~290 MB (950 MB after a load test) | **~20 MB per PHP worker, 0 when idle with PHP-FPM** |
 | Runs on                                | a VPS with Node.js 20+        | any PHP 8.1 host, a Raspberry Pi, an old laptop |
 
@@ -36,7 +37,7 @@ How these numbers were measured, and what they mean (and don't), is explained in
 
 ## Features
 
-Everything the original does, with plain HTML forms instead of client-side code:
+Everything the original does, with plain HTML pages and forms instead of client-side code:
 
 | | |
 | --- | --- |
@@ -45,11 +46,11 @@ Everything the original does, with plain HTML forms instead of client-side code:
 | **Poles** | Working groups with leads and members, their projects, tasks, requests, duties and events. |
 | **Requests** | Ask a pole for help: its members are notified, one of them clicks **Take it** and the request becomes their task. The requester is notified when it is taken and when it is done. |
 | **Projects** | Lead, team, dates, budget, milestones, progress updates, automatic progress and health, a **timeline** drawn as a table. |
-| **Tasks** | A board (one column per status, ◀ ▶ buttons to move cards), a list, filters, comments, due dates. |
-| **Votes** | Single or multiple choice, anonymous or not, closing date, restricted to a pole if needed. Results drawn with text characters. |
+| **Tasks** | A board (one column per status, a status menu on each card), a list, filters, comments, due dates. |
+| **Votes** | Single or multiple choice, anonymous or not, closing date, restricted to a pole if needed. |
 | **Volunteering** | Members log their time (`1h30`, `45min`…); totals per member and pole, estimated value, CSV export for grant applications. |
 | **Events & meetings** | General assemblies, board meetings, workshops. Month calendar, RSVP, agenda, **minutes you can print**, private **iCalendar feed**. |
-| **Finance** | Income and expenses, a monthly chart in text, project budgets, membership fees, CSV export. Visible to every member, managed by managers. |
+| **Finance** | Income and expenses, a monthly chart, project budgets, membership fees, CSV export. Visible to every member, managed by managers. |
 | **Documents** | Files and links by category; **big photos are reduced automatically** on upload. |
 | **Members** | Roles (administrator, manager, member), board positions, activation links, **join codes** with a limited number of uses. |
 | **Notifications** | In the app, and by email: **one daily summary** (default), every notification, or none. |
@@ -60,9 +61,9 @@ What changed on the way is listed, with the reason for each choice, in
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/tasks.png" alt="Task board with ◀ ▶ buttons"></td>
+    <td><img src="docs/screenshots/tasks.png" alt="Task board"></td>
     <td><img src="docs/screenshots/project.png" alt="A project: progress, milestones, budget"></td>
-    <td width="200"><img src="docs/screenshots/mobile.png" alt="Requests on a phone"></td>
+    <td width="200"><img src="docs/screenshots/mobile.png" alt="Dashboard on a phone"></td>
   </tr>
 </table>
 

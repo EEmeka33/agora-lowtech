@@ -12,7 +12,7 @@
 <div class="table"><table>
   <tr><th><?= h(t('about.numbers.code')) ?></th><td class="num"><?= h(t('about.numbers.codeValue', ['files' => $code['files'], 'lines' => number_format($code['lines'], 0, '', ' '), 'size' => fmt_bytes($code['bytes'])])) ?></td></tr>
   <tr><th><?= h(t('about.numbers.dependencies')) ?></th><td class="num">0</td></tr>
-  <tr><th><?= h(t('about.numbers.javascript')) ?></th><td class="num">0 B</td></tr>
+  <tr><th><?= h(t('about.numbers.javascript')) ?></th><td class="num"><?= h(fmt_bytes((int) filesize(ROOT . '/public/app.js'))) ?></td></tr>
   <tr><th><?= h(t('about.numbers.css')) ?></th><td class="num"><?= h(fmt_bytes($css)) ?></td></tr>
   <tr><th><?= h(t('about.numbers.database')) ?></th><td class="num"><?= h(fmt_bytes($dbBytes)) ?></td></tr>
   <tr><th><?= h(t('about.numbers.uploads')) ?></th><td class="num"><?= h(tn('about.numbers.files', $uploads['count'])) ?> · <?= h(fmt_bytes($uploads['bytes'])) ?></td></tr>

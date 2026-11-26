@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.1.0 — 2026-11-26
+
+After the first real use: "not practical, ugly, and it doesn't fit in the window".
+
+**Fixed**
+
+- Every page was taller than the window (the menu was forced to the full height of the screen, on top of the
+  header and the footer), and some pages were wider than phones. The layout is now tested at five widths.
+
+**Changed**
+
+- A new design: cards, real buttons, soft badges, progress bars instead of bars drawn with text characters.
+- A shorter menu (12 entries instead of 16), a user menu, a menu button on phones.
+- An optional script of 1.7 KB: the browser asks before deleting, filters and task statuses apply at once, the
+  user menu closes by itself. Everything still works without it (the server then asks for confirmation).
+- Task board: a status menu on each card instead of ◀ ▶ arrows.
+- Founding checklist: one line per step with a tick, finished themes folded, a page for each step.
+- Finance: the transactions first, a compact monthly chart.
+- The weight of each page is no longer shown in the footer by default (`show_page_weight`).
+
 ## 2.0.0-lowtech — 2026-11-26
 
 A complete rewrite of [Agora](https://github.com/EEmeka33/agora) 1.0 as a low-tech web application.

@@ -2,7 +2,8 @@
 agora.example.org {
     root * /var/www/agora/public
     encode gzip
-    header /style.css Cache-Control "public, max-age=31536000, immutable"
+    @static path /style.css /app.js
+    header @static Cache-Control "public, max-age=31536000, immutable"
     php_fastcgi unix//run/php/php-fpm.sock
     file_server
 }
