@@ -31,7 +31,7 @@
 
 <h2><?= h(t('settings.deleteTitle')) ?></h2>
 <p class="muted"><?= h(t('settings.deleteText')) ?></p>
-<details class="panel"<?= isset(form_errors()['password']) && !isset($_POST['current']) ? ' open' : '' ?>><summary><?= h(t('settings.deleteButton')) ?>…</summary>
+<details class="panel edit"<?= isset(form_errors()['password']) && !isset($_POST['current']) ? ' open' : '' ?>><summary><?= h(t('settings.deleteButton')) ?>…</summary>
   <form method="post" action="<?= h(url('/settings/delete')) ?>" class="form">
     <?= csrf_field() ?>
     <?= input_field('password', t('settings.deleteConfirm'), '', ['type' => 'password', 'required' => true, 'attrs' => ['autocomplete' => 'current-password']]) ?>

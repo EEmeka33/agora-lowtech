@@ -56,7 +56,7 @@
     <?php foreach ($options[$p['id']] ?? [] as $o): $n = $counts[(int) $o['id']] ?? 0; ?>
     <tr><td><?= h($o['label']) ?><?= in_array((int) $o['id'], $myVotes, true) ? ' ✓' : '' ?></td>
       <td class="num"><?= $n ?></td><td class="num"><?= pct($n, max(1, count($voters))) ?>&nbsp;%</td>
-      <td><span class="bar"><?= text_bar($n, $max, 16) ?></span>
+      <td><?= bar($n, max(1, count($voters))) ?>
         <?php if (!$p['anonymous'] && $n): ?><div class="meta"><?= h(implode(', ', array_column(array_filter($pollVotes, fn ($v) => (int) $v['option_id'] === (int) $o['id']), 'name'))) ?></div><?php endif ?></td></tr>
     <?php endforeach ?>
   </table>

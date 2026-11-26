@@ -56,8 +56,8 @@ return [
     // Data sobriety: read notifications and activity older than this are deleted.
     'retention_days' => 365,
 
-    // Show the weight of each page in the footer (useful to teach, harmless otherwise).
-    'show_page_weight' => true,
+    // Show the weight of each page and the time to build it in the footer (useful in a course).
+    'show_page_weight' => false,
 
     // Show PHP errors in the browser (never on a public server).
     'debug' => false,

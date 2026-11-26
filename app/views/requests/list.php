@@ -9,7 +9,7 @@
     'asked' => [t('requests.tabs.asked'), url('/requests', ['tab' => 'asked'])],
     'all' => [t('requests.tabs.all'), url('/requests', ['tab' => 'all'])],
 ], $tab) ?>
-<form class="filters no-print" action="<?= h(url('/requests')) ?>">
+<form class="filters auto no-print" action="<?= h(url("/requests")) ?>">
   <input type="hidden" name="tab" value="<?= h($tab) ?>">
   <?= select_field('status', t('common.status'), ['active' => t('requests.active')] + enum_options('requestStatus', REQUEST_STATUSES) + ['any' => t('common.all')], $status) ?>
   <button><?= h(t('common.filter')) ?></button>

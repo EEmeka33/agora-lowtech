@@ -22,42 +22,6 @@ $canManage = can('manageFinance', $user);
 </details>
 <?php endif ?>
 
-<h2><?= h(t('finance.monthly')) ?></h2>
-<div class="table"><table class="bars">
-  <thead><tr><th><?= h(t('common.month')) ?></th><th class="num"><?= h(t('finance.income')) ?></th><th class="num"><?= h(t('finance.expenses')) ?></th><th></th></tr></thead>
-  <?php foreach ($months as $m => $v): ?>
-  <tr><td><?= h($shortMonths[(int) substr($m, 5) - 1] . ' ' . substr($m, 0, 4)) ?></td>
-    <td class="num"><?= $v['INCOME'] ? h(fmt_money($v['INCOME'])) : '' ?></td><td class="num"><?= $v['EXPENSE'] ? h(fmt_money($v['EXPENSE'])) : '' ?></td>
-    <td><span class="bar"><?= text_bar($v['INCOME'], $maxMonth, 14) ?></span><br><span class="bar out"><?= text_bar($v['EXPENSE'], $maxMonth, 14) ?></span></td></tr>
-  <?php endforeach ?>
-</table></div>
-<p class="meta"><span class="bars"><span class="bar">█</span></span> <?= h(t('finance.income')) ?> · <span class="bars"><span class="bar out">█</span></span> <?= h(t('finance.expenses')) ?></p>
-
-<div class="grid">
-  <?php foreach (['EXPENSE' => 'finance.byCategory', 'INCOME' => 'finance.incomeByCategory'] as $type => $key): $max = $categories[$type] ? max($categories[$type]) : 0; ?>
-  <section>
-    <h2><?= h(t($key)) ?></h2>
-    <?php if (!$categories[$type]): ?><?= empty_html(t('finance.noTransactions')) ?><?php endif ?>
-    <table class="bars">
-      <?php foreach ($categories[$type] as $c => $cents): ?>
-      <tr><td><?= h(enum_label('category', $c)) ?></td><td class="num"><?= h(fmt_money($cents)) ?></td><td><span class="bar<?= $type === 'EXPENSE' ? ' out' : '' ?>"><?= text_bar($cents, $max, 10) ?></span></td></tr>
-      <?php endforeach ?>
-    </table>
-  </section>
-  <?php endforeach ?>
-</div>
-
-<?php if ($budgets): ?>
-<h2><?= h(t('finance.projectBudgets')) ?></h2>
-<div class="table"><table>
-  <?php foreach ($budgets as $b): ?>
-  <tr><td><a href="<?= h(url('/projects/' . $b['id'], ['tab' => 'budget'])) ?>"><?= h($b['title']) ?></a></td>
-    <td class="num"><?= h(fmt_money((int) $b['spent'])) ?> / <?= h(fmt_money((int) $b['budget_cents'])) ?></td>
-    <td><meter min="0" max="<?= max(1, (int) $b['budget_cents']) ?>" high="<?= (int) ($b['budget_cents'] * 0.9) ?>" value="<?= (int) $b['spent'] ?>"></meter> <?= pct((int) $b['spent'], (int) $b['budget_cents']) ?>&nbsp;%</td></tr>
-  <?php endforeach ?>
-</table></div>
-<?php endif ?>
-
 <h2><?= h(t('finance.transactions')) ?> <small>(<?= count($transactions) ?>)</small></h2>
 <?php if (!$transactions): ?><?= empty_html(t('finance.noTransactions')) ?><?php else: ?>
 <div class="table"><table>
@@ -76,6 +40,7 @@ $canManage = can('manageFinance', $user);
 </table></div>
 <?php endif ?>
 <?php if ($canManage): ?><p class="no-print"><a href="<?= h(url('/finance.csv', ['year' => $year])) ?>"><?= h(t('finance.export')) ?> (CSV)</a></p><?php endif ?>
+
 
 <h2 id="dues"><?= h(t('finance.dues')) ?> <?= (int) $duesYear ?></h2>
 <p class="muted"><?= h($assoc['membership_fee_cents'] ? t('finance.duesInfo', ['fee' => fmt_money((int) $assoc['membership_fee_cents'])]) : t('finance.duesNoFee')) ?>
@@ -101,3 +66,40 @@ $canManage = can('manageFinance', $user);
     <td class="no-print"><?= $m['dues_id'] && $canManage ? confirm_form("/dues/{$m['dues_id']}/delete", t('common.delete'), t('finance.deleteDuesWarning')) : '' ?></td></tr>
   <?php endforeach ?>
 </table></div>
+
+
+<h2><?= h(t('finance.monthly')) ?></h2>
+<div class="table"><table class="bars">
+  <thead><tr><th><?= h(t('common.month')) ?></th><th class="num"><?= h(t('finance.income')) ?></th><th class="num"><?= h(t('finance.expenses')) ?></th><th></th></tr></thead>
+  <?php foreach ($months as $m => $v): if ($m > date('Y-m') && !$v['INCOME'] && !$v['EXPENSE']) continue; ?>
+  <tr><td><?= h($shortMonths[(int) substr($m, 5) - 1] . ' ' . substr($m, 0, 4)) ?></td>
+    <td class="num"><?= $v['INCOME'] ? h(fmt_money($v['INCOME'])) : '' ?></td><td class="num"><?= $v['EXPENSE'] ? h(fmt_money($v['EXPENSE'])) : '' ?></td>
+    <td><?= $v['INCOME'] ? bar($v['INCOME'], $maxMonth) : '' ?><?= $v['INCOME'] && $v['EXPENSE'] ? '<br>' : '' ?><?= $v['EXPENSE'] ? bar($v['EXPENSE'], $maxMonth, 'out') : '' ?></td></tr>
+  <?php endforeach ?>
+</table></div>
+<p class="meta"><span class="legend"></span> <?= h(t('finance.income')) ?> · <span class="legend out"></span> <?= h(t('finance.expenses')) ?></p>
+
+<div class="grid">
+  <?php foreach (['EXPENSE' => 'finance.byCategory', 'INCOME' => 'finance.incomeByCategory'] as $type => $key): $max = $categories[$type] ? max($categories[$type]) : 0; ?>
+  <section>
+    <h2><?= h(t($key)) ?></h2>
+    <?php if (!$categories[$type]): ?><?= empty_html(t('finance.noTransactions')) ?><?php endif ?>
+    <table class="bars">
+      <?php foreach ($categories[$type] as $c => $cents): ?>
+      <tr><td><?= h(enum_label('category', $c)) ?></td><td class="num"><?= h(fmt_money($cents)) ?></td><td><?= bar($cents, $max, $type === 'EXPENSE' ? 'out' : '') ?></td></tr>
+      <?php endforeach ?>
+    </table>
+  </section>
+  <?php endforeach ?>
+</div>
+
+<?php if ($budgets): ?>
+<h2><?= h(t('finance.projectBudgets')) ?></h2>
+<div class="table"><table>
+  <?php foreach ($budgets as $b): ?>
+  <tr><td><a href="<?= h(url('/projects/' . $b['id'], ['tab' => 'budget'])) ?>"><?= h($b['title']) ?></a></td>
+    <td class="num"><?= h(fmt_money((int) $b['spent'])) ?> / <?= h(fmt_money((int) $b['budget_cents'])) ?></td>
+    <td><meter min="0" max="<?= max(1, (int) $b['budget_cents']) ?>" high="<?= (int) ($b['budget_cents'] * 0.9) ?>" value="<?= (int) $b['spent'] ?>"></meter> <?= pct((int) $b['spent'], (int) $b['budget_cents']) ?>&nbsp;%</td></tr>
+  <?php endforeach ?>
+</table></div>
+<?php endif ?>

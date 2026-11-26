@@ -157,9 +157,8 @@ test('html escaping and text bars', function () {
     $html = text_html("see https://example.org/a?b=1&c=2 <b>");
     check(str_contains($html, '<a href="https://example.org/a?b=1&amp;c=2"'), $html);
     check(str_contains($html, '&lt;b&gt;'));
-    check_same('██████████', text_bar(10, 10, 10));
-    check_same('█████', text_bar(5, 10, 10));
-    check_same('', text_bar(0, 10, 10));
+    check_same('<progress class="out" max="10" value="5">50 %</progress>', bar(5, 10, 'out'));
+    check_same('<progress class="" max="1" value="0">0 %</progress>', bar(0, 0));
     check_same('/tasks', safe_local_path('/tasks'));
     check_same('/', safe_local_path('//evil.example'));
     check_same('/', safe_local_path('https://evil.example'));

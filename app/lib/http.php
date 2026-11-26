@@ -31,6 +31,10 @@ function run_app(): void
         [$handler, $params] = match_route(require APP . '/routes.php', $method, request_path());
         if ($method === 'POST') {
             check_csrf();
+            if (needs_confirmation(request_path()) && !post_bool('confirmed')) {
+                render_confirmation();
+                return;
+            }
         }
         // The page files are named after the first word of the handler: tasks_show → pages/tasks.php
         require_once APP . '/pages/' . explode('_', $handler)[0] . '.php';
@@ -140,6 +144,22 @@ function client_ip(): string
     return substr((string) ($_SERVER['REMOTE_ADDR'] ?? ''), 0, 64);
 }
 
+/** Irreversible actions (…/delete, …/remove…) must be confirmed before they run. */
+function needs_confirmation(string $path): bool
+{
+    return (bool) preg_match('#/(delete|remove|revoke|cancel|release)$#', $path) && !str_starts_with($path, '/settings/')
+        || $path === '/settings/leave';
+}
+
+/** "Are you sure?" page: the same form again, with confirmed=1 (used when JavaScript is off). */
+function render_confirmation(): void
+{
+    $fields = array_diff_key($_POST, array_flip(['_csrf', 'confirmed', '_question']));
+    $vars = ['question' => post_str('_question') ?: t('common.confirmDeleteText'), 'fields' => $fields,
+        'action' => request_path(), 'back' => safe_local_path($_POST['_back'] ?? null, '/')];
+    render('confirm', $vars, t('common.confirm'), current_account() && current_association() ? 'app' : 'auth');
+}
+
 // ─── Responses ─────────────────────────────────────────────────────────────
 
 /**
@@ -186,7 +206,8 @@ function send_security_headers(): void
 {
     header_remove('X-Powered-By');
     // No JavaScript at all: the browser refuses any script, even if one was injected.
-    header("Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
+    // Only our own stylesheet and script are allowed: nothing injected can run.
+    header("Content-Security-Policy: default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: DENY');
     header('Referrer-Policy: same-origin');

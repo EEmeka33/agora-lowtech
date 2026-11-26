@@ -6,6 +6,7 @@ foreach ($board as $b) {
 }
 $canEdit = can('manageStructure', $user);
 ?>
+<a class="back" href="<?= h(url('/poles')) ?>">← <?= h(t('poles.title')) ?></a>
 <?= page_head(t('structure.title'), t('structure.subtitle')) ?>
 
 <h2><?= h(t('structure.orgChart')) ?></h2>

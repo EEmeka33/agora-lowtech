@@ -26,9 +26,9 @@ $current = '';
   <?php endif ?>
   <li><a href="<?= h($d['stored_name'] ? url('/files/' . $d['id']) : $d['url']) ?>"<?= $d['stored_name'] ? '' : ' rel="noopener"' ?>><?= h($d['title']) ?></a>
     <span class="meta"><?= $d['stored_name'] ? h(strtoupper(pathinfo($d['stored_name'], PATHINFO_EXTENSION)) . ' · ' . fmt_bytes((int) $d['size_bytes'])) : h(t('documents.linkBadge') . ' · ' . (parse_url($d['url'], PHP_URL_HOST) ?: '')) ?></span>
-    <div class="meta"><?= h(implode(' · ', array_filter([t('documents.uploadedBy', ['name' => $d['uploader_name'] ?? '—']), fmt_date(utc_to_local($d['created_at'])), $d['pole_name'], $d['project_title']]))) ?></div>
+    <div class="meta"><?= h(implode(' · ', array_filter([t('documents.uploadedBy', ['name' => $d['uploader_name'] ?? '—']), fmt_date(utc_to_local($d['created_at'])), $d['pole_name'], $d['project_title']]))) ?>
+      <?php if (can('editDocument', $user, $d)): ?> · <a class="no-print" href="<?= h(url('/documents/' . $d['id'])) ?>"><?= h(t('common.edit')) ?></a><?php endif ?></div>
     <?php if ($d['description']): ?><div class="text meta"><?= text_html($d['description']) ?></div><?php endif ?>
-    <?php if (can('editDocument', $user, $d)): ?><div class="no-print"><a href="<?= h(url('/documents/' . $d['id'])) ?>"><?= h(t('common.edit')) ?></a></div><?php endif ?>
   </li>
 <?php endforeach ?>
 <?= $documents ? '</ul>' : '' ?>

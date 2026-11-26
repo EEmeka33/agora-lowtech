@@ -1,15 +1,15 @@
 <?php
 $query = array_filter(['scope' => $scope, 'view' => $view] + $filters);
 $tabUrl = fn (array $change) => url('/tasks', array_merge($query, $change));
-$columns = [];
-foreach (TASK_STATUSES as $s) {
-    $columns[$s] = [];
-}
+$columns = array_fill_keys(TASK_STATUSES, []);
 foreach ($tasks as $task) {
     $columns[$task['status']][] = $task;
 }
+$statusOptions = enum_options('taskStatus', TASK_STATUSES);
 ?>
-<?= page_head(t('tasks.title'), t('tasks.subtitle')) ?>
+<?= page_head(t('tasks.title'), t('tasks.subtitle'), $view === 'board'
+    ? '<a class="btn small" href="' . h($tabUrl(['view' => 'list'])) . '">' . h(t('common.list')) . '</a>'
+    : '<a class="btn small" href="' . h($tabUrl(['view' => 'board'])) . '">' . h(t('common.board')) . '</a>') ?>
 
 <details class="panel" id="new"<?= get_str('new') || form_failed('task') ? ' open' : '' ?>>
   <summary><?= h(t('tasks.newTask')) ?></summary>
@@ -25,9 +25,9 @@ foreach ($tasks as $task) {
     'unassigned' => [t('tasks.scope.unassigned'), $tabUrl(['scope' => 'unassigned'])],
 ], $scope) ?>
 
-<form class="filters no-print" action="<?= h(url('/tasks')) ?>">
+<form class="filters auto no-print" action="<?= h(url('/tasks')) ?>">
   <input type="hidden" name="scope" value="<?= h($scope) ?>">
-  <?= select_field('view', t('tasks.view'), ['board' => t('common.board'), 'list' => t('common.list')], $view) ?>
+  <input type="hidden" name="view" value="<?= h($view) ?>">
   <?= select_field('project', t('common.project'), project_options(true), $filters['project'], ['empty' => t('common.all')]) ?>
   <?= select_field('pole', t('common.pole'), pole_options(), $filters['pole'], ['empty' => t('common.all')]) ?>
   <?= select_field('person', t('common.assignee'), member_options(), $filters['person'], ['empty' => t('common.all')]) ?>
@@ -41,22 +41,22 @@ foreach ($tasks as $task) {
 <?php elseif ($view === 'list'): ?>
   <?= template('tasks/table', ['tasks' => $tasks]) ?>
 <?php else: ?>
-<p class="meta"><?= h(t('tasks.moveHint')) ?></p>
 <div class="board">
-  <?php foreach ($columns as $status => $list): $i = array_search($status, TASK_STATUSES, true); ?>
+  <?php foreach ($columns as $status => $list): ?>
   <section>
-    <h2><?= h(enum_label('taskStatus', $status)) ?> <small>(<?= count($list) ?>)</small></h2>
+    <h2><?= h(enum_label('taskStatus', $status)) ?> <span class="meta"><?= count($list) ?></span></h2>
     <?php foreach ($list as $task): ?>
     <div class="card">
       <a href="<?= h(url('/tasks/' . $task['id'])) ?>"><?= h($task['title']) ?></a>
       <?= in_array($task['priority'], ['HIGH', 'URGENT'], true) ? status_badge('priority', $task['priority']) : '' ?>
-      <div class="meta"><?= h($task['assignee_name'] ?? t('common.unassigned')) ?><?= $task['due_date'] ? ' · ' . due_html($task['due_date'], $status === 'DONE') : '' ?>
-        <?= $task['project_title'] ? '<br>' . h($task['project_title']) : '' ?></div>
+      <div class="meta"><?= h($task['assignee_name'] ?? t('common.unassigned')) ?><?= $task['due_date'] ? ' · ' . due_html($task['due_date'], $status === 'DONE') : '' ?></div>
+      <?php if ($task['project_title']): ?><div class="meta"><?= h($task['project_title']) ?></div><?php endif ?>
       <?php if (can('editTask', $user, $task)): ?>
-      <div class="move no-print">
-        <?php if ($i > 0): ?><?= button_form("/tasks/{$task['id']}/status", '◀', ['status' => TASK_STATUSES[$i - 1]], '', t('tasks.moveTo') . ' ' . enum_label('taskStatus', TASK_STATUSES[$i - 1])) ?><?php endif ?>
-        <?php if ($i < count(TASK_STATUSES) - 1): ?><?= button_form("/tasks/{$task['id']}/status", '▶', ['status' => TASK_STATUSES[$i + 1]], '', t('tasks.moveTo') . ' ' . enum_label('taskStatus', TASK_STATUSES[$i + 1])) ?><?php endif ?>
-      </div>
+      <form method="post" action="<?= h(url("/tasks/{$task['id']}/status")) ?>" class="move no-print">
+        <?= csrf_field() ?><?= back_field() ?>
+        <select name="status" aria-label="<?= h(t('tasks.moveTo')) ?>"><?= options_html($statusOptions, $status) ?></select>
+        <button class="small"><?= h(t('tasks.move')) ?></button>
+      </form>
       <?php endif ?>
     </div>
     <?php endforeach ?>

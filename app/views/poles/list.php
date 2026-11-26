@@ -1,4 +1,4 @@
-<?= page_head(t('poles.title'), t('poles.subtitle')) ?>
+<?= page_head(t('poles.title'), t('poles.subtitle'), '<a class="btn" href="' . h(url('/structure')) . '">' . h(t('structure.title')) . '</a>') ?>
 <?php if (can('managePoles', $user)): ?>
 <details class="panel"<?= get_str('new') || form_failed('pole') ? ' open' : '' ?>>
   <summary><?= h(t('poles.newPole')) ?></summary>

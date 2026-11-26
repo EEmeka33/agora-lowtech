@@ -187,7 +187,7 @@ test('another association never sees our data', function () use ($mallory, &$ids
         check_same(404, $mallory->get($path)->status, "GET $path");
     }
     check_same(404, $mallory->post('/tasks/' . $ids['task2'] . '/status', ['status' => 'DONE'])->status, 'cannot change a task');
-    check_same(404, $mallory->post('/projects/' . $ids['project'] . '/delete')->status, 'cannot delete a project');
+    check_same(404, $mallory->post('/projects/' . $ids['project'] . '/delete', ['confirmed' => '1'])->status, 'cannot delete a project');
     check_same(403, $mallory->post('/tasks', ['title' => 'Sneaky', 'project_id' => $ids['project']])->status, 'cannot link to a project');
     check_same(403, $mallory->post('/tasks', ['title' => 'Sneaky', 'assignee_id' => $ids['yanis']])->status, 'cannot assign a stranger');
     $mallory->get('/search?q=glass');
@@ -305,15 +305,30 @@ test('every page answers, in both languages', function () use ($camille, $base) 
     check_same("ok\n", $visitor->get('/health')->body);
 });
 
-test('low-tech budget: no JavaScript, light pages', function () use ($base) {
+test('irreversible actions are confirmed first', function () use ($camille, $id) {
+    $camille->post('/tasks', ['title' => 'Temporary task']);
+    $taskId = $id($camille);
+    $camille->post("/tasks/$taskId/delete", ['_question' => 'Delete task: are you sure?']);
+    check_same(200, $camille->status);
+    check($camille->see('Please confirm') && $camille->see('Delete task: are you sure?'), 'confirmation page shown');
+    check_same(200, $camille->get("/tasks/$taskId")->status, 'nothing deleted yet');
+    $camille->post("/tasks/$taskId/delete", ['confirmed' => '1']);
+    check_same(404, $camille->get("/tasks/$taskId")->status, 'deleted once confirmed');
+    $camille->post('/tasks', ['title' => 'Another task']);
+    check($camille->see('data-confirm='), 'buttons ask in the browser when JavaScript is on');
+});
+
+test('low-tech budget: light pages, JavaScript optional', function () use ($base) {
     $pages = Browser::$pages;
     check(count($pages) > 25, count($pages) . ' pages visited');
     $heaviest = ['', 0];
     foreach ($pages as $path => $html) {
-        check(!preg_match('/<script/i', $html), "no <script> in $path");
+        // One small script of our own, optional; never inline code.
+        check(preg_match_all('/<script\b/i', $html) <= 1, "at most one script in $path");
+        check(!preg_match('/<script\b(?![^>]*\bsrc="\/app\.js\?v=\d+" defer>\s*<\/script>)/i', $html), "only /app.js, deferred, in $path");
         check(!preg_match('/\son[a-z]+=/i', $html), "no inline event handler in $path");
         check(!preg_match('/\sstyle="/i', $html), "no inline style in $path (blocked by the CSP)");
-        check(preg_match_all('/<(?:link|img)\b[^>]*(?:href|src)="(?!data:)/i', $html) <= 1, "only the stylesheet is loaded by $path");
+        check(preg_match_all('/<(?:link|img|script)\b[^>]*(?:href|src)="(?!data:)/i', $html) <= 2, "only the stylesheet and app.js are loaded by $path");
         check(str_contains($html, '<html lang="'), "language declared in $path");
         if (strlen($html) > $heaviest[1]) {
             $heaviest = [$path, strlen($html)];
@@ -321,6 +336,8 @@ test('low-tech budget: no JavaScript, light pages', function () use ($base) {
         check(strlen($html) < 30 * 1024, "$path weighs " . round(strlen($html) / 1024, 1) . ' KB (budget: 30 KB)');
     }
     $css = (int) filesize(dirname(__DIR__) . '/public/style.css');
-    check($css < 15 * 1024, "style.css weighs $css bytes (budget: 15 KB)");
-    echo "\n  heaviest page: {$heaviest[0]} (" . round($heaviest[1] / 1024, 1) . " KB), stylesheet: " . round($css / 1024, 1) . " KB\n  ";
+    check($css < 25 * 1024, "style.css weighs $css bytes (budget: 25 KB)");
+    $js = (int) filesize(dirname(__DIR__) . '/public/app.js');
+    check($js < 3 * 1024, "app.js weighs $js bytes (budget: 3 KB)");
+    echo "\n  heaviest page: {$heaviest[0]} (" . round($heaviest[1] / 1024, 1) . " KB), stylesheet: " . round($css / 1024, 1) . " KB, script: " . round($js / 1024, 1) . " KB\n  ";
 });

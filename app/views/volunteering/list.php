@@ -61,13 +61,13 @@ $maxPole = $byPole ? max(array_column($byPole, 'minutes')) : 0;
   <h2><?= h(t('volunteering.byMember')) ?></h2>
   <table class="bars">
     <?php foreach ($byMember as $m): ?>
-    <tr><td><?= person((int) $m['id'], $m['name']) ?></td><td class="num"><?= h(minutes_to_hours((int) $m['minutes'])) ?>&nbsp;h</td><td><span class="bar"><?= text_bar((int) $m['minutes'], $maxMember, 12) ?></span></td></tr>
+    <tr><td><?= person((int) $m['id'], $m['name']) ?></td><td class="num"><?= h(minutes_to_hours((int) $m['minutes'])) ?>&nbsp;h</td><td><?= bar((int) $m['minutes'], $maxMember) ?></td></tr>
     <?php endforeach ?>
   </table>
   <h2><?= h(t('volunteering.byPole')) ?></h2>
   <table class="bars">
     <?php foreach ($byPole as $p): ?>
-    <tr><td><?= h($p['name']) ?></td><td class="num"><?= h(minutes_to_hours((int) $p['minutes'])) ?>&nbsp;h</td><td><span class="bar"><?= text_bar((int) $p['minutes'], $maxPole, 12) ?></span></td></tr>
+    <tr><td><?= h($p['name']) ?></td><td class="num"><?= h(minutes_to_hours((int) $p['minutes'])) ?>&nbsp;h</td><td><?= bar((int) $p['minutes'], $maxPole) ?></td></tr>
     <?php endforeach ?>
   </table>
   <?php if (is_manager($user)): ?><p class="no-print"><a href="<?= h(url('/volunteering.csv', ['year' => $year])) ?>"><?= h(t('volunteering.export')) ?> (CSV)</a></p><?php endif ?>

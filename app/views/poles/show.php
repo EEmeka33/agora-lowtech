@@ -63,7 +63,7 @@
       <p class="row"><button><?= h(t('common.add')) ?></button></p>
     </form>
     <?php else: ?><p class="meta"><?= h(t('poles.allMembersAdded')) ?></p><?php endif ?>
-    <details class="panel no-print"<?= form_failed('pole') ? ' open' : '' ?>>
+    <details class="panel edit no-print"<?= form_failed('pole') ? ' open' : '' ?>>
       <summary><?= h(t('poles.editPole')) ?></summary>
       <form method="post" action="<?= h(url('/poles/' . $pole['id'])) ?>" class="form">
         <?= csrf_field('pole') ?>

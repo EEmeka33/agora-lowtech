@@ -60,7 +60,7 @@
     <tr><th><?= h(t('common.budget')) ?></th><td><?= $p['budget_cents'] !== null ? h(fmt_money((int) $spent)) . ' / ' . h(fmt_money((int) $p['budget_cents'])) : '—' ?></td></tr>
   </table>
   <?php if ($canEdit): ?>
-  <details class="panel no-print"<?= form_failed('project') ? ' open' : '' ?>>
+  <details class="panel edit no-print"<?= form_failed('project') ? ' open' : '' ?>>
     <summary><?= h(t('projects.editProject')) ?></summary>
     <form method="post" action="<?= h(url('/projects/' . $p['id'])) ?>" class="form">
       <?= template('projects/form', ['project' => $p]) ?>

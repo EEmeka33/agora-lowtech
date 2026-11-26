@@ -25,13 +25,13 @@ function step_fields(array $s = []): string
         . textarea_field('notes', t('common.notes'), $v('notes'), ['rows' => 3]);
 }
 
+/** A step: its explanation for everyone, the form for those who may change it. */
 function foundation_edit(int $id): void
 {
     $user = require_member();
-    $step = find_or_404('foundation_steps', $id);
-    ensure(can('editStep', $user, $step));
-    render('edit', ['heading' => t('foundation.editStep'), 'back' => "/foundation#step-$id", 'action' => "/foundation/$id",
-        'fields' => step_fields($step), 'delete' => can('manageFoundation', $user) ? "/foundation/$id/delete" : null], $step['title']);
+    find_or_404('foundation_steps', $id);
+    $step = row('SELECT s.*, u.name AS assignee_name FROM foundation_steps s LEFT JOIN users u ON u.id = s.assignee_id WHERE s.id = ?', [$id]);
+    render('foundation/step', ['user' => $user, 'step' => $step, 'canEdit' => can('editStep', $user, $step)], $step['title']);
 }
 
 function read_step(): array
@@ -96,7 +96,7 @@ function foundation_status(int $id): void
     if ($next === 'DONE') {
         log_activity('completed', 'step', $id, $step['title']);
     }
-    redirect("/foundation#step-$id");
+    back("/foundation#step-$id");
 }
 
 function foundation_delete(int $id): void

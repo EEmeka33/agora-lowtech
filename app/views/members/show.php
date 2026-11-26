@@ -23,7 +23,7 @@
 </div>
 <aside class="no-print">
   <?php if ($canEdit): ?>
-  <details class="panel"<?= form_errors() ? ' open' : '' ?>><summary><?= h(t('members.editMember')) ?></summary>
+  <details class="panel edit"<?= form_errors() ? ' open' : '' ?>><summary><?= h(t('members.editMember')) ?></summary>
     <form method="post" action="<?= h(url('/members/' . $id)) ?>" class="form"><?= csrf_field() ?>
       <?php if ($canEditAccount): ?>
       <?= input_field('name', t('common.name'), old('name', $m['name']), ['required' => true]) ?>

@@ -25,7 +25,7 @@ $isMeeting = in_array($e['type'], ['GENERAL_ASSEMBLY', 'BOARD_MEETING', 'POLE_ME
   <h2 id="minutes"><?= h(t('events.minutes')) ?></h2>
   <?= $e['minutes'] ? '<div class="text">' . text_html($e['minutes']) . '</div>' : empty_html(t('events.noMinutes')) ?>
   <?php if (can('writeMinutes', $user)): ?>
-  <details class="panel no-print"><summary><?= h(t('events.editMinutes')) ?></summary>
+  <details class="panel edit no-print"><summary><?= h(t('events.editMinutes')) ?></summary>
     <form method="post" action="<?= h(url("/events/{$e['id']}/minutes")) ?>" class="form"><?= csrf_field() ?>
       <?= textarea_field('minutes', t('events.minutes'), $e['minutes'], ['rows' => 12, 'hint' => t('events.minutesHint')]) ?>
       <p class="row"><button class="primary"><?= h(t('common.save')) ?></button></p></form>
@@ -47,7 +47,7 @@ $isMeeting = in_array($e['type'], ['GENERAL_ASSEMBLY', 'BOARD_MEETING', 'POLE_ME
   </table>
   <p class="no-print"><a href="<?= h(url('/volunteering', ['event' => $e['id']])) ?>#new"><?= h(t('tasks.logTime')) ?></a></p>
   <?php if (can('manageEvents', $user)): ?>
-  <details class="panel no-print"<?= form_failed('event') ? ' open' : '' ?>><summary><?= h(t('events.editEvent')) ?></summary>
+  <details class="panel edit no-print"<?= form_failed('event') ? ' open' : '' ?>><summary><?= h(t('events.editEvent')) ?></summary>
     <form method="post" action="<?= h(url('/events/' . $e['id'])) ?>" class="form"><?= csrf_field('event') ?>
       <?= template('events/form', ['event' => $e]) ?>
       <p class="row"><button class="primary"><?= h(t('common.saveChanges')) ?></button></p></form>

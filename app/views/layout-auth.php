@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= h(($title !== '' ? $title . ' · ' : '') . 'Agora') ?></title>
 <link rel="stylesheet" href="<?= h(url('/style.css')) ?>?v=<?= filemtime(ROOT . '/public/style.css') ?>">
+<script src="<?= h(url('/app.js')) ?>?v=<?= filemtime(ROOT . '/public/app.js') ?>" defer></script>
 <link rel="icon" href="data:,">
 </head>
 <body class="auth">

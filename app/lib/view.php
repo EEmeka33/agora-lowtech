@@ -166,17 +166,19 @@ function button_form(string $action, string $label, array $hidden = [], string $
 }
 
 /**
- * A destructive action that asks for confirmation without JavaScript: the
- * button only appears once the <details> is opened.
+ * A destructive action (delete, remove…). With JavaScript, the browser asks
+ * "are you sure?"; without it, the server shows a confirmation page first
+ * (see needs_confirmation() in http.php).
  */
-function confirm_form(string $action, string $label, string $warning = '', array $hidden = []): string
+function confirm_form(string $action, string $label, string $warning = '', array $hidden = [], string $class = 'link danger'): string
 {
-    $html = '<details class="confirm"><summary>' . h($label) . '…</summary><form method="post" action="' . h(url($action)) . '">'
-        . csrf_field() . back_field();
+    $question = t('common.confirmQuestion', ['action' => $label]) . ' ' . (trim($warning) !== '' ? $warning : t('common.confirmDeleteText'));
+    $html = '<form method="post" action="' . h(url($action)) . '" class="inline" data-confirm="' . h($question) . '">'
+        . csrf_field() . back_field() . '<input type="hidden" name="confirmed" value="0"><input type="hidden" name="_question" value="' . h($question) . '">';
     foreach ($hidden as $k => $v) {
         $html .= '<input type="hidden" name="' . h($k) . '" value="' . h($v) . '">';
     }
-    return $html . '<p>' . h($warning ?: t('common.confirmDeleteText')) . '</p><button class="danger">' . h(t('common.confirmButton', ['action' => $label])) . '</button></form></details>';
+    return $html . '<button class="' . h($class) . '">' . h($label) . '</button></form>';
 }
 
 // ─── Small pieces ──────────────────────────────────────────────────────────
@@ -208,6 +210,13 @@ function tone(?string $status): string
 function status_badge(string $enum, ?string $value): string
 {
     return $value ? badge(enum_label($enum, $value), tone($value)) : '';
+}
+
+/** A horizontal bar for charts (a native <progress>: no inline style, no script). */
+function bar(int|float $value, int|float $max, string $class = ''): string
+{
+    $max = max(1, $max);
+    return '<progress class="' . h($class) . '" max="' . h($max) . '" value="' . h(max(0, $value)) . '">' . pct($value, $max) . ' %</progress>';
 }
 
 /** Native progress bar (works everywhere, no CSS needed) followed by the number. */

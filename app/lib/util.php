@@ -282,21 +282,6 @@ function fmt_bytes(?int $bytes): string
     return "$s {$units[$i]}";
 }
 
-/**
- * A horizontal bar made of text characters (█▏▎▍▌▋▊▉), $width characters long
- * for 100 %. Works in every browser, in text browsers and on paper.
- */
-function text_bar(int|float $value, int|float $max, int $width = 20): string
-{
-    if ($max <= 0 || $value <= 0) {
-        return '';
-    }
-    $eighths = (int) round(min(1, $value / $max) * $width * 8);
-    $bar = str_repeat('█', intdiv($eighths, 8));
-    $rest = $eighths % 8;
-    return $bar . ($rest ? ['', '▏', '▎', '▍', '▌', '▋', '▊', '▉'][$rest] : '') ?: '▏';
-}
-
 // ─── Tokens ────────────────────────────────────────────────────────────────
 
 /** 256-bit random token, URL-safe. */

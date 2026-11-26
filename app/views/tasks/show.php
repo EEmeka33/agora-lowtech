@@ -13,7 +13,7 @@
       <?= button_form("/tasks/{$task['id']}/status", enum_label('taskStatus', $s), ['status' => $s], $s === 'DONE' ? 'primary' : '') ?>
     <?php endif; endforeach ?>
   </p>
-  <details class="panel"<?= form_failed('task') ? ' open' : '' ?>>
+  <details class="panel edit"<?= form_failed('task') ? ' open' : '' ?>>
     <summary><?= h(t('tasks.editTask')) ?></summary>
     <form method="post" action="<?= h(url('/tasks/' . $task['id'])) ?>" class="form">
       <?= template('tasks/form', ['task' => $task, 'form' => 'task']) ?>
