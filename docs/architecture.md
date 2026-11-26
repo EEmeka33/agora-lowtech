@@ -174,8 +174,8 @@ export async function logTime(_prev: ActionState, fd: FormData) {
 2. after the response is sent (`after()`), emails people who accept emails, if `SMTP_URL` is set.
 
 Texts are not stored: `renderNotification(type, data, locale)` builds the sentence from the dictionaries,
-so each person reads notifications in their own language. The bell polls `/api/notifications` every
-60 seconds.
+so each person reads notifications in their own language. The bell does not poll: it refreshes
+its count when the person comes back to the tab (at most twice a minute) and after each navigation.
 
 Who is notified:
 

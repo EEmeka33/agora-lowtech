@@ -38,18 +38,24 @@ export function NotificationBell({
     setUnread(initialUnread);
   }
 
+  // No polling: the count is refreshed when the person comes back to the tab (at most
+  // twice a minute) and after each navigation. An open tab used to ask the server
+  // every minute, day and night: 1,440 requests a day, even when nobody was looking.
   React.useEffect(() => {
-    const tick = async () => {
+    let last = Date.now();
+    const refresh = async () => {
+      if (document.visibilityState !== "visible" || Date.now() - last < 30_000) return;
+      last = Date.now();
       try {
         const res = await fetch("/api/notifications", { cache: "no-store" });
         if (res.ok) setUnread(((await res.json()) as { unread: number }).unread);
       } catch {}
     };
-    const id = setInterval(tick, 60_000);
-    window.addEventListener("focus", tick);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
     return () => {
-      clearInterval(id);
-      window.removeEventListener("focus", tick);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
     };
   }, []);
 
