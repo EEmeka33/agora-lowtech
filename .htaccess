@@ -1,0 +1,14 @@
+# Apache, when you can't choose the document root (typical shared hosting):
+# everything is served from public/, and the other folders stay private.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(app|bin|data|tests|docs)(/|$) - [F,L]
+  RewriteCond %{REQUEST_URI} !/public/
+  RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+<IfModule !mod_rewrite.c>
+  Require all denied
+</IfModule>
+<FilesMatch "^(config\.php|config\.example\.php|.*\.md|.*\.sql)$">
+  Require all denied
+</FilesMatch>

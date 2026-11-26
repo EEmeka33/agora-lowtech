@@ -1,0 +1,5 @@
+# Your settings and your data never go into git.
+/config.php
+/data/*
+!/data/.htaccess
+!/data/README.md

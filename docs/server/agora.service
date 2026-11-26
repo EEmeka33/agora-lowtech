@@ -1,0 +1,18 @@
+# systemd service for the simplest setup: PHP's built-in server, on a Raspberry
+# Pi or an old laptop, for a local network (put Caddy or nginx in front of it
+# for the Internet). Copy to /etc/systemd/system/agora.service, then:
+#   sudo systemctl enable --now agora
+[Unit]
+Description=Agora (low-tech association workspace)
+After=network.target
+
+[Service]
+User=agora
+WorkingDirectory=/home/agora/agora
+# Four workers so that a slow request doesn't block the others.
+Environment=PHP_CLI_SERVER_WORKERS=4
+ExecStart=/usr/bin/php -S 0.0.0.0:8080 -t public public/index.php
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
