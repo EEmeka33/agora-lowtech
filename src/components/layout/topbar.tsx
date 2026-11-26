@@ -48,7 +48,7 @@ export function Topbar({
   const [pending, startTransition] = React.useTransition();
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/80 px-3 backdrop-blur-md sm:px-5">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/80 px-3 backdrop-blur-md sm:px-5 print:hidden">
       <Button
         variant="ghost"
         size="icon"

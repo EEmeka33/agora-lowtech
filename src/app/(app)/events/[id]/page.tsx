@@ -158,21 +158,27 @@ export default async function EventPage(props: PageProps<"/events/[id]">) {
                   <CardTitle className="flex items-center gap-2">
                     <ScrollText className="size-4 text-primary" /> {t.events.minutes}
                   </CardTitle>
-                  <CardDescription>{t.events.minutesHint}</CardDescription>
+                  <CardDescription className="print:hidden">{t.events.minutesHint}</CardDescription>
                 </div>
               </CardHeader>
               <CardContent>
                 {canMinutes ? (
-                  <InlineTextForm
-                    action={saveMinutes.bind(null, event.id)}
-                    name="minutes"
-                    defaultValue={event.minutes ?? ""}
-                    placeholder={t.events.minutesPlaceholder}
-                    submitLabel={t.events.saveMinutes}
-                    rows={10}
-                    resetOnSuccess={false}
-                    successToast
-                  />
+                  <>
+                    <div className="print:hidden">
+                      <InlineTextForm
+                        action={saveMinutes.bind(null, event.id)}
+                        name="minutes"
+                        defaultValue={event.minutes ?? ""}
+                        placeholder={t.events.minutesPlaceholder}
+                        submitLabel={t.events.saveMinutes}
+                        rows={10}
+                        resetOnSuccess={false}
+                        successToast
+                      />
+                    </div>
+                    {/* A text box cannot grow on paper: print the minutes as text. */}
+                    {event.minutes && <RichText text={event.minutes} className="hidden print:block" />}
+                  </>
                 ) : event.minutes ? (
                   <RichText text={event.minutes} />
                 ) : (
@@ -185,7 +191,7 @@ export default async function EventPage(props: PageProps<"/events/[id]">) {
 
         <div className="space-y-4">
           {!isPast && (
-            <Card>
+            <Card className="print:hidden">
               <CardContent className="space-y-3 py-4">
                 <p className="text-sm font-medium">{t.events.yourAnswer}</p>
                 <RsvpButtons eventId={event.id} status={mine} />

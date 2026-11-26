@@ -19,7 +19,11 @@ export function Progress({
       aria-valuenow={v}
       aria-valuemin={0}
       aria-valuemax={100}
-      className={cn("w-full overflow-hidden rounded-full bg-muted", size === "sm" ? "h-1.5" : "h-2", className)}
+      className={cn(
+        "w-full overflow-hidden rounded-full bg-muted print-exact",
+        size === "sm" ? "h-1.5" : "h-2",
+        className,
+      )}
     >
       <div
         className={cn("h-full rounded-full transition-[width] duration-500", color ? colorOf(color).bar : "bg-primary")}

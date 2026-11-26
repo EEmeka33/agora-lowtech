@@ -263,7 +263,7 @@ export function Sidebar(props: SidebarProps) {
 
   return (
     <>
-      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 border-r bg-sidebar lg:block">
+      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 border-r bg-sidebar lg:block print:hidden">
         <SidebarContent {...props} />
       </aside>
       {open && (

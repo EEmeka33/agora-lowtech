@@ -45,7 +45,7 @@ export function TaskBoard({ tasks, compact }: { tasks: TaskCardData[]; compact?:
   return (
     <div
       className={cn(
-        "grid gap-4 overflow-x-auto pb-2",
+        "grid gap-4 overflow-x-auto pb-2 print:grid-flow-row print:grid-cols-2 print:overflow-visible",
         compact ? "md:grid-cols-4" : "auto-cols-[minmax(260px,1fr)] grid-flow-col lg:grid-flow-row lg:grid-cols-4",
       )}
     >

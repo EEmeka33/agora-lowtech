@@ -81,7 +81,9 @@ async function Shell({ children }: { children: React.ReactNode }) {
               unread={unread}
               associationName={association.name}
             />
-            <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
+            <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8 print:max-w-none print:p-0">
+              {children}
+            </main>
           </div>
         </div>
       </MobileNavProvider>

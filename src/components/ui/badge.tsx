@@ -19,7 +19,7 @@ export function Badge({
       )}
       {...props}
     >
-      {dot && <span className={cn("size-1.5 shrink-0 rounded-full", c.dot)} />}
+      {dot && <span className={cn("size-1.5 shrink-0 rounded-full print-exact", c.dot)} />}
       {children}
     </span>
   );

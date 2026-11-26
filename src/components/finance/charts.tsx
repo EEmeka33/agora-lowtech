@@ -31,7 +31,7 @@ export async function MonthlyChart({ data, currency }: { data: Month[]; currency
   const height = (cents: number) => `${(cents / max) * 100}%`;
   return (
     <div>
-      <div className="mb-3 flex items-center gap-4 text-xs text-muted-foreground" aria-hidden>
+      <div className="mb-3 flex items-center gap-4 text-xs text-muted-foreground print-exact" aria-hidden>
         <span className="flex items-center gap-1.5">
           <span className="size-2.5 rounded-sm bg-[var(--chart-income)]" /> {t.finance.income}
         </span>
@@ -39,7 +39,7 @@ export async function MonthlyChart({ data, currency }: { data: Month[]; currency
           <span className="size-2.5 rounded-sm bg-[var(--chart-expense)]" /> {t.finance.expenses}
         </span>
       </div>
-      <div className="flex h-64 gap-2" aria-hidden>
+      <div className="flex h-64 gap-2 print-exact" aria-hidden>
         <div className="relative mb-6 w-10 shrink-0 text-right text-[11px] text-muted-foreground tabular-nums">
           {ticks.map((f) => (
             <span key={f} className="absolute right-0 -translate-y-1/2" style={{ top: `${(1 - f) * 100}%` }}>
@@ -107,7 +107,7 @@ export async function CategoryBars({ data, currency }: { data: { label: string; 
   const max = Math.max(1, ...data.map((d) => d.value));
   const total = data.reduce((s, d) => s + d.value, 0);
   return (
-    <ul className="space-y-3">
+    <ul className="space-y-3 print-exact">
       {data.map((d) => (
         <li
           key={d.label}

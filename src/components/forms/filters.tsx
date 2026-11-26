@@ -43,7 +43,7 @@ export function FilterSelect({
       value={value}
       onChange={(e) => update(param, e.target.value || null)}
       className={cn(
-        "h-8 w-auto max-w-52 min-w-32 text-[13px]",
+        "h-8 w-auto max-w-52 min-w-32 text-[13px] print:hidden",
         value && "border-primary/50 bg-primary-soft/40",
         className,
       )}
@@ -84,7 +84,7 @@ export function SearchInput({
   }, [value]);
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative print:hidden", className)}>
       <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
       <input
         value={value}

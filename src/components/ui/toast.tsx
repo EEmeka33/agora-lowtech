@@ -43,7 +43,7 @@ export function Toaster() {
   }, [dismiss]);
 
   return (
-    <ol className="pointer-events-none fixed right-4 bottom-4 z-[100] flex w-[min(22rem,calc(100vw-2rem))] flex-col gap-2">
+    <ol className="pointer-events-none fixed right-4 bottom-4 z-[100] flex w-[min(22rem,calc(100vw-2rem))] flex-col gap-2 print:hidden">
       {items.map((item) => (
         <li
           key={item.id}
