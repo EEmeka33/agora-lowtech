@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "@fontsource-variable/inter";
 
 /* Dark mode is driven by a `dark` class on <html> (set before paint, see layout.tsx). */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -166,7 +165,8 @@
   --color-destructive: var(--destructive);
   --color-success: var(--success);
   --color-warning: var(--warning);
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* The system font of each device (San Francisco, Segoe UI, Roboto…): nothing to download. */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
   --radius-xl: var(--radius);
 }
 
@@ -222,7 +222,6 @@
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
